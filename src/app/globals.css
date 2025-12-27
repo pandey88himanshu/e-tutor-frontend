@@ -1,0 +1,182 @@
+@import "tailwindcss";
+
+@theme {
+  /* =========================
+     GRAY SCALE
+     ========================= */
+  --gray-900: 24 28 35;
+  --gray-800: 55 60 71;
+  --gray-700: 77 83 96;
+  --gray-600: 113 118 134;
+  --gray-500: 149 154 165;
+  --gray-400: 176 179 189;
+  --gray-300: 199 202 211;
+  --gray-200: 220 222 228;
+  --gray-100: 237 238 242;
+  --gray-50: 248 249 251;
+  --white: 255 255 255;
+
+  /* =========================
+     PRIMARY (ORANGE)
+     ========================= */
+  --primary-900: 47 18 8;
+  --primary-800: 101 40 18;
+  --primary-700: 150 63 32;
+  --primary-600: 205 83 41;
+  --primary-500: 255 109 61;
+  --primary-400: 255 143 102;
+  --primary-300: 255 177 148;
+  --primary-200: 255 220 206;
+  --primary-100: 255 239 233;
+
+  /* =========================
+     SECONDARY (BLUE / INDIGO)
+     ========================= */
+  --secondary-900: 15 14 52;
+  --secondary-800: 33 34 94;
+  --secondary-700: 54 56 140;
+  --secondary-600: 72 71 191;
+  --secondary-500: 91 90 255;
+  --secondary-400: 122 120 255;
+  --secondary-300: 164 163 255;
+  --secondary-200: 209 208 255;
+  --secondary-100: 234 234 255;
+
+  /* =========================
+     SUCCESS (GREEN)
+     ========================= */
+  --success-900: 7 42 10;
+  --success-800: 14 76 19;
+  --success-700: 21 115 28;
+  --success-600: 33 158 43;
+  --success-500: 41 196 54;
+  --success-400: 88 210 99;
+  --success-300: 132 225 142;
+  --success-200: 199 239 205;
+  --success-100: 232 247 234;
+
+  /* =========================
+     WARNING (AMBER / ORANGE)
+     ========================= */
+  --warning-900: 45 25 5;
+  --warning-800: 94 54 12;
+  --warning-700: 143 80 20;
+  --warning-600: 194 109 30;
+  --warning-500: 255 146 41;
+  --warning-400: 255 177 87;
+  --warning-300: 255 199 132;
+  --warning-200: 255 224 186;
+  --warning-100: 255 243 225;
+
+  /* =========================
+     DANGER (RED)
+     ========================= */
+  --danger-900: 45 10 10;
+  --danger-800: 92 24 24;
+  --danger-700: 136 37 37;
+  --danger-600: 183 52 52;
+  --danger-500: 235 68 68;
+  --danger-400: 240 113 113;
+  --danger-300: 245 154 154;
+  --danger-200: 250 204 204;
+  --danger-100: 254 235 235;
+
+  /* =========================
+     FONT FAMILIES
+     ========================= */
+  --font-display: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont;
+  --font-body: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont;
+
+  /* =========================
+     DISPLAY TYPOGRAPHY
+     ========================= */
+
+  /* Display 01 */
+  --display-01-size: 80px;
+  --display-01-line: 80px;
+  --display-01-weight: 700;
+
+  /* Display 02 */
+  --display-02-size: 72px;
+  --display-02-line: 74px;
+  --display-02-weight: 700;
+
+  /* Display 03 */
+  --display-03-size: 64px;
+  --display-03-line: 68px;
+  --display-03-weight: 700;
+
+  /* =========================
+     HEADING TYPOGRAPHY
+     ========================= */
+
+  /* Heading 01 */
+  --heading-01-size: 48px;
+  --heading-01-line: 52px;
+  --heading-01-weight: 600;
+
+  /* Heading 02 */
+  --heading-02-size: 40px;
+  --heading-02-line: 48px;
+  --heading-02-weight: 600;
+
+  /* Heading 03 */
+  --heading-03-size: 32px;
+  --heading-03-line: 40px;
+  --heading-03-weight: 600;
+
+  /* Heading 04 */
+  --heading-04-size: 24px;
+  --heading-04-line: 32px;
+  --heading-04-weight: 600;
+}
+
+@layer base {
+  .display-01 {
+    font-family: var(--font-display);
+    font-size: var(--display-01-size);
+    line-height: var(--display-01-line);
+    font-weight: var(--display-01-weight);
+  }
+
+  .display-02 {
+    font-family: var(--font-display);
+    font-size: var(--display-02-size);
+    line-height: var(--display-02-line);
+    font-weight: var(--display-02-weight);
+  }
+
+  .display-03 {
+    font-family: var(--font-display);
+    font-size: var(--display-03-size);
+    line-height: var(--display-03-line);
+    font-weight: var(--display-03-weight);
+  }
+  .heading-01 {
+    font-family: var(--font-display);
+    font-size: var(--heading-01-size);
+    line-height: var(--heading-01-line);
+    font-weight: var(--heading-01-weight);
+  }
+
+  .heading-02 {
+    font-family: var(--font-display);
+    font-size: var(--heading-02-size);
+    line-height: var(--heading-02-line);
+    font-weight: var(--heading-02-weight);
+  }
+
+  .heading-03 {
+    font-family: var(--font-display);
+    font-size: var(--heading-03-size);
+    line-height: var(--heading-03-line);
+    font-weight: var(--heading-03-weight);
+  }
+
+  .heading-04 {
+    font-family: var(--font-display);
+    font-size: var(--heading-04-size);
+    line-height: var(--heading-04-line);
+    font-weight: var(--heading-04-weight);
+  }
+}
