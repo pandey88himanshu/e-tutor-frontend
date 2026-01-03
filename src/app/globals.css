@@ -82,12 +82,6 @@
   --danger-100: 254 235 235;
 
   /* =========================
-     FONT FAMILIES
-     ========================= */
-  --font-display: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont;
-  --font-body: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont;
-
-  /* =========================
      DISPLAY TYPOGRAPHY
      ========================= */
 
@@ -129,54 +123,235 @@
   --heading-04-size: 24px;
   --heading-04-line: 32px;
   --heading-04-weight: 600;
+
+  /* =========================
+     BUTTON TYPOGRAPHY
+     ========================= */
+
+  --button-l-size: 18px;
+  --button-l-line: 56px;
+  --button-l-weight: 600;
+
+  --button-m-size: 16px;
+  --button-m-line: 48px;
+  --button-m-weight: 600;
+
+  --button-s-size: 14px;
+  --button-s-line: 40px;
+  --button-s-weight: 600;
+
+  /* =========================
+     LABEL TYPOGRAPHY
+     ========================= */
+
+  --label-xxl-size: 18px;
+  --label-xxl-line: 100%;
+  --label-xxl-weight: 500;
+
+  --label-xl-size: 16px;
+  --label-xl-line: 100%;
+  --label-xl-weight: 500;
+
+  --label-lg-size: 14px;
+  --label-lg-line: 100%;
+  --label-lg-weight: 500;
+
+  --label-md-size: 12px;
+  --label-md-line: 12px;
+  --label-md-weight: 500;
+
+  --label-sm-size: 10px;
+  --label-sm-line: 12px;
+  --label-sm-weight: 500;
+
+  /* =========================
+     BODY TYPOGRAPHY
+     ========================= */
+
+  /* Body XXXL */
+  --body-xxxl-size: 24px;
+  --body-xxxl-line: 32px;
+
+  --body-xxl-size: 20px;
+  --body-xxl-line: 26px;
+
+  /* Body XL */
+  --body-xl-size: 18px;
+  --body-xl-line: 24px;
+
+  /* Body Large */
+  --body-lg-size: 16px;
+  --body-lg-line: 22px;
+
+  /* Body Medium */
+  --body-md-size: 14px;
+  --body-md-line: 20px;
+
+  /* Body Small */
+  --body-sm-size: 12px;
+  --body-sm-line: 16px;
+
+  /* Body Tiny */
+  --body-xs-size: 10px;
+  --body-xs-line: 10px;
 }
 
 @layer base {
   .display-01 {
-    font-family: var(--font-display);
     font-size: var(--display-01-size);
     line-height: var(--display-01-line);
     font-weight: var(--display-01-weight);
   }
 
   .display-02 {
-    font-family: var(--font-display);
     font-size: var(--display-02-size);
     line-height: var(--display-02-line);
     font-weight: var(--display-02-weight);
   }
 
   .display-03 {
-    font-family: var(--font-display);
     font-size: var(--display-03-size);
     line-height: var(--display-03-line);
     font-weight: var(--display-03-weight);
   }
   .heading-01 {
-    font-family: var(--font-display);
     font-size: var(--heading-01-size);
     line-height: var(--heading-01-line);
     font-weight: var(--heading-01-weight);
   }
 
   .heading-02 {
-    font-family: var(--font-display);
     font-size: var(--heading-02-size);
     line-height: var(--heading-02-line);
     font-weight: var(--heading-02-weight);
   }
 
   .heading-03 {
-    font-family: var(--font-display);
     font-size: var(--heading-03-size);
     line-height: var(--heading-03-line);
     font-weight: var(--heading-03-weight);
   }
 
   .heading-04 {
-    font-family: var(--font-display);
     font-size: var(--heading-04-size);
     line-height: var(--heading-04-line);
     font-weight: var(--heading-04-weight);
+  }
+
+  /* =========================
+     BODY TEXT
+     ========================= */
+
+  /* XXXL */
+  .body-xxxl-400 {
+    font-size: var(--body-xxxl-size);
+    line-height: var(--body-xxxl-line);
+    font-weight: 400;
+  }
+
+  .body-xxl-500 {
+    font-size: var(--body-xxl-size);
+    line-height: var(--body-xxl-line);
+    font-weight: 500;
+  }
+
+  .body-xxl-600 {
+    font-size: var(--body-xxl-size);
+    line-height: var(--body-xxl-line);
+    font-weight: 600;
+  }
+
+  /* XL */
+  .body-xl-400,
+  .body-xl-500,
+  .body-xl-600 {
+    font-size: var(--body-xl-size);
+    line-height: var(--body-xl-line);
+  }
+
+  .body-xl-400 {
+    font-weight: 400;
+  }
+  .body-xl-500 {
+    font-weight: 500;
+  }
+  .body-xl-600 {
+    font-weight: 600;
+  }
+
+  /* Large */
+  .body-lg-400 {
+    font-size: var(--body-lg-size);
+    line-height: 24px;
+    font-weight: 400;
+  }
+
+  .body-lg-500,
+  .body-lg-600 {
+    font-size: var(--body-lg-size);
+    line-height: var(--body-lg-line);
+  }
+
+  .body-lg-500 {
+    font-weight: 500;
+  }
+  .body-lg-600 {
+    font-weight: 600;
+  }
+
+  /* Medium */
+  .body-md-400 {
+    font-size: var(--body-md-size);
+    line-height: 22px;
+    font-weight: 400;
+  }
+
+  .body-md-500,
+  .body-md-600 {
+    font-size: var(--body-md-size);
+    line-height: var(--body-md-line);
+  }
+
+  .body-md-500 {
+    font-weight: 500;
+  }
+  .body-md-600 {
+    font-weight: 600;
+  }
+
+  /* Small */
+  .body-sm-400,
+  .body-sm-500,
+  .body-sm-600 {
+    font-size: var(--body-sm-size);
+    line-height: var(--body-sm-line);
+  }
+
+  .body-sm-400 {
+    font-weight: 400;
+  }
+  .body-sm-500 {
+    font-weight: 500;
+  }
+  .body-sm-600 {
+    font-weight: 600;
+  }
+
+  /* Tiny */
+  .body-xs-400,
+  .body-xs-500,
+  .body-xs-600 {
+    font-size: var(--body-xs-size);
+    line-height: var(--body-xs-line);
+  }
+
+  .body-xs-400 {
+    font-weight: 400;
+  }
+  .body-xs-500 {
+    font-weight: 500;
+  }
+  .body-xs-600 {
+    font-weight: 600;
   }
 }
