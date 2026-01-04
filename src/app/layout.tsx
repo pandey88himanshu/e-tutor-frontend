@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     title: "E-Tutor - Your Personal AI Tutor for Any Subject",
     description:
       "Learn faster with E-Tutor’s AI-powered personalized tutoring. Adaptive lessons, instant feedback, and 24/7 support in math, science, coding, and more.",
-    url: "https://www.e-tutor.com", // Replace with your actual domain
+    url: "https://e-tutor-frontend.vercel.app", // Replace with your actual domain
     siteName: "E-Tutor",
     images: [
       {
@@ -85,7 +85,7 @@ export const metadata: Metadata = {
 
   // Canonical URL (prevents duplicate content issues)
   alternates: {
-    canonical: "https://www.e-tutor.com",
+    canonical: "https://e-tutor-frontend.vercel.app",
   },
 };
 
