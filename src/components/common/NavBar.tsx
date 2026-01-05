@@ -10,6 +10,7 @@ const NavBar = () => {
   const pathname = usePathname();
   const isSignUpPage = pathname === "/sign-up";
   const isSignInPage = pathname === "/sign-in";
+  const isOTPPage = pathname === "/verify-otp";
   return (
     <>
       <nav className='w-full border-b border-[rgb(var(--gray-200))] bg-[rgb(var(--white))] relative z-50'>
@@ -52,6 +53,18 @@ const NavBar = () => {
             </div>
           )}
 
+          {isOTPPage && (
+            <div className='hidden md:flex items-center gap-3'>
+              <p className='body-sm-400 text-[rgb(var(--gray-600))]'>
+                Facing Any Issues?
+              </p>
+              <Link
+                href='/sign-up'
+                className='flex h-12 min-w-42 items-center justify-center rounded-md bg-[rgb(var(--primary-100))] px-6 body-md-500 text-[rgb(var(--primary-500))] transition-colors hover:bg-[rgb(var(--primary-200))] focus:outline-none focus:ring-2 focus:ring-[rgb(var(--primary-500))] focus:ring-offset-2'>
+                Go Back
+              </Link>
+            </div>
+          )}
           {/* Mobile Hamburger */}
           <button
             className='md:hidden flex items-center justify-center rounded-md p-2 text-[rgb(var(--gray-700))] focus:outline-none focus:ring-2 focus:ring-[rgb(var(--primary-500))]'
@@ -139,6 +152,19 @@ const NavBar = () => {
                 href='/sign-up'
                 className='flex h-12 w-full items-center justify-center rounded-md bg-[rgb(var(--primary-100))] px-6 body-md-500 text-[rgb(var(--primary-500))] transition-colors hover:bg-[rgb(var(--primary-200))] focus:outline-none focus:ring-2 focus:ring-[rgb(var(--primary-500))] focus:ring-offset-2'>
                 Create Account
+              </Link>
+            </div>
+          )}
+
+          {isOTPPage && (
+            <div className='p-6'>
+              <p className='mb-4 body-sm-400 text-[rgb(var(--gray-600))]'>
+                Facing Any Issues?
+              </p>
+              <Link
+                href='/sign-up'
+                className='flex h-12 w-full items-center justify-center rounded-md bg-[rgb(var(--primary-100))] px-6 body-md-500 text-[rgb(var(--primary-500))] transition-colors hover:bg-[rgb(var(--primary-200))] focus:outline-none focus:ring-2 focus:ring-[rgb(var(--primary-500))] focus:ring-offset-2'>
+                Go Back
               </Link>
             </div>
           )}
