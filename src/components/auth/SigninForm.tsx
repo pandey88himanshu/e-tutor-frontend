@@ -56,7 +56,7 @@ const SigninForm = () => {
 
           <button
             type='submit'
-            className='flex h-12 min-w-[140px] items-center justify-center rounded-md bg-[rgb(var(--primary-500))] px-6 body-md-600 text-white transition-colors hover:bg-[rgb(var(--primary-600))]'>
+            className='flex h-12 min-w-35 items-center justify-center rounded-md bg-[rgb(var(--primary-500))] px-6 body-md-600 text-white transition-colors hover:bg-[rgb(var(--primary-600))]'>
             Sign In →
           </button>
         </div>
