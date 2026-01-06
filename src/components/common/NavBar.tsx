@@ -5,6 +5,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { FaBell, FaHeart, FaShoppingCart } from "react-icons/fa";
+import LightBgBtn from "./LightBgBtn";
+import DarkBgBtn from "./DarkBgBtn";
 
 const NavBar = () => {
   const [open, setOpen] = useState(false);
@@ -19,14 +21,16 @@ const NavBar = () => {
         <div className="mx-auto flex h-20 max-w-7xl items-center justify-between gap-6 px-4 sm:px-6 lg:px-8">
           {/* Logo */}
           <div className="flex items-center gap-2">
-            <Image
-              src="/common/LOGO.png"
-              alt="E-tutor Logo"
-              width={100}
-              height={100}
-              priority
-              className="h-auto w-25"
-            />
+            <Link href="/">
+              <Image
+                src="/common/LOGO.png"
+                alt="E-tutor Logo"
+                width={100}
+                height={100}
+                priority
+                className="h-auto w-25"
+              />
+            </Link>
           </div>
 
           {/* Search Bar (Desktop Only) - Show on all pages except auth pages */}
@@ -48,19 +52,9 @@ const NavBar = () => {
               <FaHeart className="text-[rgb(var(--gray-700))] cursor-pointer hover:text-[rgb(var(--primary-500))] transition-colors" />
               <FaShoppingCart className="text-[rgb(var(--gray-700))] cursor-pointer hover:text-[rgb(var(--primary-500))] transition-colors" />
 
-              <Link
-                href="/sign-up"
-                className="body-sm-600 flex h-12 items-center rounded-md bg-[rgb(var(--primary-100))] px-6 text-[rgb(var(--primary-500))] transition-colors hover:bg-[rgb(var(--primary-200))]"
-              >
-                Create Account
-              </Link>
+              <LightBgBtn href="/sign-up" children="Create Account" />
 
-              <Link
-                href="/sign-in"
-                className="body-sm-600 flex h-12 items-center rounded-md bg-[rgb(var(--primary-500))] px-6 text-[rgb(var(--white))] transition-colors hover:bg-[rgb(var(--primary-600))]"
-              >
-                Sign In
-              </Link>
+              <DarkBgBtn href="/sign-in" children="Sign In" />
             </div>
           )}
 
@@ -70,12 +64,7 @@ const NavBar = () => {
               <p className="body-sm-400 text-[rgb(var(--gray-600))]">
                 Have an account?
               </p>
-              <Link
-                href="/sign-in"
-                className="flex h-12 min-w-42 items-center justify-center rounded-md bg-[rgb(var(--primary-100))] px-6 body-md-500 text-[rgb(var(--primary-500))] transition-colors hover:bg-[rgb(var(--primary-200))] focus:outline-none focus:ring-2 focus:ring-[rgb(var(--primary-500))] focus:ring-offset-2"
-              >
-                Login Account
-              </Link>
+              <LightBgBtn href="/sign-in" children="Login Account" />
             </div>
           )}
 
@@ -85,12 +74,7 @@ const NavBar = () => {
               <p className="body-sm-400 text-[rgb(var(--gray-600))]">
                 Don't have an account?
               </p>
-              <Link
-                href="/sign-up"
-                className="flex h-12 min-w-42 items-center justify-center rounded-md bg-[rgb(var(--primary-100))] px-6 body-md-500 text-[rgb(var(--primary-500))] transition-colors hover:bg-[rgb(var(--primary-200))] focus:outline-none focus:ring-2 focus:ring-[rgb(var(--primary-500))] focus:ring-offset-2"
-              >
-                Create Account
-              </Link>
+              <LightBgBtn href="/sign-up" children="Create Account" />
             </div>
           )}
 
@@ -100,12 +84,7 @@ const NavBar = () => {
               <p className="body-sm-400 text-[rgb(var(--gray-600))]">
                 Facing Any Issues?
               </p>
-              <Link
-                href="/sign-up"
-                className="flex h-12 min-w-42 items-center justify-center rounded-md bg-[rgb(var(--primary-100))] px-6 body-md-500 text-[rgb(var(--primary-500))] transition-colors hover:bg-[rgb(var(--primary-200))] focus:outline-none focus:ring-2 focus:ring-[rgb(var(--primary-500))] focus:ring-offset-2"
-              >
-                Go Back
-              </Link>
+              <LightBgBtn href="/sign-up" children="Go Back" />
             </div>
           )}
 
@@ -216,21 +195,8 @@ const NavBar = () => {
 
             {/* Auth Buttons */}
             <div className="space-y-3">
-              <Link
-                href="/sign-up"
-                onClick={() => setOpen(false)}
-                className="body-sm-600 flex h-12 w-full items-center justify-center rounded-md bg-[rgb(var(--primary-100))] px-6 text-[rgb(var(--primary-500))] transition-colors hover:bg-[rgb(var(--primary-200))]"
-              >
-                Create Account
-              </Link>
-
-              <Link
-                href="/sign-in"
-                onClick={() => setOpen(false)}
-                className="body-sm-600 flex h-12 w-full items-center justify-center rounded-md bg-[rgb(var(--primary-500))] px-6 text-[rgb(var(--white))] transition-colors hover:bg-[rgb(var(--primary-600))]"
-              >
-                Sign In
-              </Link>
+              <LightBgBtn href="/sign-up" children="Create Account" />
+              <DarkBgBtn href="/sign-in" children="Sign In" />
             </div>
           </div>
 
@@ -240,13 +206,11 @@ const NavBar = () => {
               <p className="mb-4 body-sm-400 text-[rgb(var(--gray-600))]">
                 Have an account?
               </p>
-              <Link
+              <LightBgBtn
                 href="/sign-in"
                 onClick={() => setOpen(false)}
-                className="flex h-12 w-full items-center justify-center rounded-md bg-[rgb(var(--primary-100))] px-6 body-md-500 text-[rgb(var(--primary-500))] transition-colors hover:bg-[rgb(var(--primary-200))] focus:outline-none focus:ring-2 focus:ring-[rgb(var(--primary-500))] focus:ring-offset-2"
-              >
-                Login Account
-              </Link>
+                children="Login Account"
+              />
             </div>
           )}
 
@@ -256,13 +220,12 @@ const NavBar = () => {
               <p className="mb-4 body-sm-400 text-[rgb(var(--gray-600))]">
                 Don't have an account?
               </p>
-              <Link
+
+              <LightBgBtn
                 href="/sign-up"
                 onClick={() => setOpen(false)}
-                className="flex h-12 w-full items-center justify-center rounded-md bg-[rgb(var(--primary-100))] px-6 body-md-500 text-[rgb(var(--primary-500))] transition-colors hover:bg-[rgb(var(--primary-200))] focus:outline-none focus:ring-2 focus:ring-[rgb(var(--primary-500))] focus:ring-offset-2"
-              >
-                Create Account
-              </Link>
+                children="Create Account"
+              />
             </div>
           )}
 
@@ -272,13 +235,11 @@ const NavBar = () => {
               <p className="mb-4 body-sm-400 text-[rgb(var(--gray-600))]">
                 Facing Any Issues?
               </p>
-              <Link
+              <LightBgBtn
                 href="/sign-up"
                 onClick={() => setOpen(false)}
-                className="flex h-12 w-full items-center justify-center rounded-md bg-[rgb(var(--primary-100))] px-6 body-md-500 text-[rgb(var(--primary-500))] transition-colors hover:bg-[rgb(var(--primary-200))] focus:outline-none focus:ring-2 focus:ring-[rgb(var(--primary-500))] focus:ring-offset-2"
-              >
-                Go Back
-              </Link>
+                children="Go Back"
+              />
             </div>
           )}
         </div>

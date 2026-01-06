@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import DarkBgBtn from "../common/DarkBgBtn";
 
 const OtpForm = () => {
   const [otp, setOtp] = useState(["", "", "", ""]);
@@ -33,47 +34,43 @@ const OtpForm = () => {
   };
 
   return (
-    <div className='flex flex-col justify-center'>
+    <div className="flex flex-col justify-center">
       {/* Heading */}
-      <h1 className='heading-03 mb-2 text-[rgb(var(--gray-900))]'>
+      <h1 className="heading-03 mb-2 text-[rgb(var(--gray-900))]">
         Verify OTP
       </h1>
-      <p className='mb-6 body-md-400 text-[rgb(var(--gray-600))]'>
+      <p className="mb-6 body-md-400 text-[rgb(var(--gray-600))]">
         Enter the 4-digit code sent to your email.
       </p>
 
-      <form onSubmit={handleSubmit} className='flex flex-col gap-6'>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-6">
         {/* OTP Inputs */}
-        <div className='flex justify-between gap-3'>
+        <div className="flex justify-between gap-3">
           {otp.map((digit, index) => (
             <input
               key={index}
               ref={(el) => {
                 if (el) inputRefs.current[index] = el;
               }}
-              type='text'
-              inputMode='numeric'
+              type="text"
+              inputMode="numeric"
               maxLength={1}
               value={digit}
               onChange={(e) => handleChange(e.target.value, index)}
               onKeyDown={(e) => handleKeyDown(e, index)}
-              className='h-14 w-full rounded-md border border-[rgb(var(--gray-200))] text-center text-xl font-semibold text-[rgb(var(--gray-900))] focus:ring-2 focus:ring-[rgb(var(--primary-500))]'
+              className="h-14 w-full rounded-md border border-[rgb(var(--gray-200))] text-center text-xl font-semibold text-[rgb(var(--gray-900))] focus:ring-2 focus:ring-[rgb(var(--primary-500))]"
             />
           ))}
         </div>
 
         {/* Submit */}
-        <button
-          type='submit'
-          className='flex h-12 w-full items-center justify-center rounded-md bg-[rgb(var(--primary-500))] body-md-600 text-white hover:bg-[rgb(var(--primary-600))]'>
-          Verify OTP →
-        </button>
+        <DarkBgBtn href="#" onClick={() => handleSubmit({ preventDefault: () => {} } as React.FormEvent)} children="Verify OTP" />
       </form>
 
       {/* Resend */}
-      <p className='mt-6 text-center body-sm-400 text-[rgb(var(--gray-600))]'>
+      <p className="mt-6 text-center body-sm-400 text-[rgb(var(--gray-600))]">
         Didn’t receive the code?{" "}
-        <span className='cursor-pointer text-[rgb(var(--primary-500))]'>
+        <span className="cursor-pointer text-[rgb(var(--primary-500))]">
           Resend OTP
         </span>
       </p>

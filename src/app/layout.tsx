@@ -8,6 +8,10 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_BASE_URL || "https://e-tutor-frontend.vercel.app"
+  ),
+
   // Core SEO
   title: {
     default: "E-Tutor | AI-Powered Personalized Online Learning Platform",
