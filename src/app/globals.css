@@ -355,3 +355,7 @@
     font-weight: 600;
   }
 }
+
+.clip-hero-shape {
+  clip-path: polygon(0 0, 15% 0, 0 100%);
+}
