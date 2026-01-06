@@ -1,10 +1,11 @@
 // src/components/hero/HeroSection.tsx
 import Image from "next/image";
+import DarkBgBtn from "../common/DarkBgBtn";
 
 const HeroSection = () => {
   return (
     <section className="w-full bg-white">
-      <div className="mx-auto max-w-[1440px]">
+      <div className="mx-auto max-w-360">
         <div className="grid grid-cols-1 lg:grid-cols-2 min-h-137">
           {/* LEFT CONTENT */}
           <div className="flex flex-col justify-center px-6 sm:px-12 lg:px-20 gap-6">
@@ -17,22 +18,8 @@ const HeroSection = () => {
               learn with expert anytime, anywhere.
             </p>
 
-            <div>
-              <button
-                className="
-                  inline-flex items-center justify-center
-                  px-8
-                  bg-[rgb(var(--primary-500))]
-                  text-white
-                  body-md-600
-                  rounded-md
-                  hover:bg-[rgb(var(--primary-600))]
-                  transition-colors
-                  h-12
-                "
-              >
-                Create Account
-              </button>
+            <div className="inline-flex items-center justify-start">
+              <DarkBgBtn href="/sign-up" children="Create Account" />
             </div>
           </div>
           <div className="relative hidden lg:block w-full h-full">
