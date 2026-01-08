@@ -8,7 +8,7 @@ export default function AuthLayout({
   return (
     <>
       <NavBar />
-      <main className='min-h-[calc(100vh-64px)]'>{children}</main>
+      <main>{children}</main>
     </>
   );
 }

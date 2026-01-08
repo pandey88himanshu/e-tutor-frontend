@@ -12,14 +12,14 @@ const AuthVisual = ({
   alt = "Auth illustration",
 }: AuthVisualProps) => {
   return (
-    <div className='relative flex h-full w-full items-center justify-center overflow-hidden'>
+    <div className="relative flex h-full w-full items-center justify-center overflow-hidden">
       <Image
         src={imageSrc}
         alt={alt}
         width={836}
         height={836}
         priority
-        className='max-h-full max-w-full object-contain'
+        className="max-h-full max-w-full object-contain"
       />
     </div>
   );

@@ -1,12 +1,44 @@
 "use client";
 
 import { useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
+import { useForm } from "react-hook-form";
 import Image from "next/image";
 import DarkBgBtn from "../common/DarkBgBtn";
+import FormField from "@/utils/FormField";
+import Input from "@/utils/Input";
+import PasswordInput from "@/utils/PasswordInput";
 
 const SigninForm = () => {
   const [showPassword, setShowPassword] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    mode: "onBlur",
+    defaultValues: {
+      email: "",
+      password: "",
+      rememberMe: false,
+    },
+  });
+
+  interface SigninFormData {
+    email: string;
+    password: string;
+    rememberMe: boolean;
+  }
+
+  const onSubmit = async (data: SigninFormData): Promise<void> => {
+    try {
+      console.log("Form data:", data);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      alert("Sign in successful!");
+    } catch (error) {
+      console.error("Submission error:", error);
+    }
+  };
 
   return (
     <div className="flex w-full flex-col">
@@ -15,50 +47,61 @@ const SigninForm = () => {
         Sign in to your account
       </h1>
 
-      <form className="flex flex-col gap-5">
+      <div className="flex flex-col gap-5">
         {/* Email */}
-        <div className="flex flex-col gap-2">
-          <label className="body-sm-500 text-[rgb(var(--gray-900))]">
-            Email
-          </label>
-          <input
+        <FormField label="Email" error={errors.email?.message}>
+          <Input
             type="email"
             placeholder="Username or email address..."
-            className="h-12 rounded-md border border-[rgb(var(--gray-200))] px-4 body-md-400 placeholder:text-[rgb(var(--gray-500))] focus:outline-none focus:ring-2 focus:ring-[rgb(var(--primary-500))]"
+            error={errors.email}
+            {...register("email", {
+              required: "Email is required",
+              pattern: {
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                message: "Invalid email address",
+              },
+            })}
           />
-        </div>
+        </FormField>
 
         {/* Password */}
-        <div className="flex flex-col gap-2">
-          <label className="body-sm-500 text-[rgb(var(--gray-900))]">
-            Password
-          </label>
-          <div className="relative">
-            <input
-              type={showPassword ? "text" : "password"}
-              placeholder="Password"
-              className="h-12 w-full rounded-md border border-[rgb(var(--gray-200))] px-4 pr-10 body-md-400 placeholder:text-[rgb(var(--gray-500))] focus:outline-none focus:ring-2 focus:ring-[rgb(var(--primary-500))]"
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-[rgb(var(--gray-600))]"
-            >
-              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-            </button>
-          </div>
-        </div>
+        <FormField label="Password" error={errors.password?.message}>
+          <PasswordInput
+            placeholder="Password"
+            error={errors.password}
+            showPassword={showPassword}
+            onToggle={() => setShowPassword(!showPassword)}
+            {...register("password", {
+              required: "Password is required",
+              minLength: {
+                value: 6,
+                message: "Password must be at least 6 characters",
+              },
+            })}
+          />
+        </FormField>
 
         {/* Remember me + Action */}
         <div className="flex items-center justify-between">
           <label className="flex items-center gap-2 body-sm-400 text-[rgb(var(--gray-600))]">
-            <input type="checkbox" className="h-4 w-4" />
+            <input
+              type="checkbox"
+              className="h-4 w-4"
+              {...register("rememberMe")}
+            />
             Remember me
           </label>
 
-          <DarkBgBtn href="#" children="Sign In" />
+          <DarkBgBtn
+            href="#"
+            onClick={() => {
+              handleSubmit(onSubmit)();
+            }}
+          >
+            {isSubmitting ? "Signing In..." : "Sign In"}
+          </DarkBgBtn>
         </div>
-      </form>
+      </div>
 
       {/* Divider */}
       <div className="my-6 flex items-center gap-4">
@@ -69,7 +112,12 @@ const SigninForm = () => {
 
       {/* Google OAuth */}
       <button className="flex h-12 w-full items-center justify-center gap-3 rounded-md border border-[rgb(var(--gray-200))] body-md-500 text-[rgb(var(--gray-700))] hover:bg-[rgb(var(--gray-50))]">
-        <Image src="/icons/google.svg" width={20} height={20} alt="Google" />
+        <Image
+          src="/icons/google.svg"
+          alt="Google Logo"
+          width={20}
+          height={20}
+        />
         Continue with Google
       </button>
     </div>
