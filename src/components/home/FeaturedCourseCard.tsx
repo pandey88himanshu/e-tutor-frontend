@@ -29,7 +29,7 @@ const FeaturedCourseCard = ({
   return (
     <div className='flex flex-col sm:flex-row gap-4 rounded-lg border border-gray-200 bg-white p-0 transition-all duration-300 hover:shadow-md hover:border-gray-300'>
       {/* Image - Responsive */}
-      <div className='w-full sm:w-48 h-48 sm:h-auto rounded-t-lg sm:rounded-l-lg sm:rounded-tr-none bg-gradient-to-br from-blue-100 to-purple-100 flex-shrink-0 flex items-center justify-center text-gray-400 overflow-hidden relative'>
+      <div className='w-full sm:w-48 h-48 sm:h-auto rounded-t-lg sm:rounded-l-lg sm:rounded-tr-none bg-linear-to-br from-blue-100 to-purple-100 shrink-0 flex items-center justify-center text-gray-400 overflow-hidden relative'>
         <Image
           src={image}
           alt={title}
