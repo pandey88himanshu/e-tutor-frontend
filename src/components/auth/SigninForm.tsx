@@ -53,7 +53,7 @@ const SigninForm = () => {
           <Input
             type="email"
             placeholder="Username or email address..."
-            error={errors.email}
+            error={!!errors.email}
             {...register("email", {
               required: "Email is required",
               pattern: {
@@ -68,7 +68,7 @@ const SigninForm = () => {
         <FormField label="Password" error={errors.password?.message}>
           <PasswordInput
             placeholder="Password"
-            error={errors.password}
+            error={!!errors.password}
             showPassword={showPassword}
             onToggle={() => setShowPassword(!showPassword)}
             {...register("password", {

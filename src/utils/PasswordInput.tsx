@@ -1,7 +1,19 @@
 import Input from "./Input";
 import { Eye, EyeOff } from "lucide-react";
-// Reusable PasswordInput component
-const PasswordInput = ({ error, showPassword, onToggle, ...props }) => {
+
+interface PasswordInputProps
+  extends React.InputHTMLAttributes<HTMLInputElement> {
+  error?: boolean;
+  showPassword: boolean;
+  onToggle: () => void;
+}
+
+const PasswordInput = ({
+  error,
+  showPassword,
+  onToggle,
+  ...props
+}: PasswordInputProps) => {
   return (
     <div className="relative">
       <Input

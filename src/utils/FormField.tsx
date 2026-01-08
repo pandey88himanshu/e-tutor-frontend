@@ -1,4 +1,10 @@
-const FormField = ({ label, error, children }) => {
+interface FormFieldProps {
+  label?: string;
+  error?: string;
+  children: React.ReactNode;
+}
+
+const FormField = ({ label, error, children }: FormFieldProps) => {
   return (
     <div className="flex flex-col gap-2">
       {label && (

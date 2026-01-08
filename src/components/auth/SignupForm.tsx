@@ -67,7 +67,7 @@ const SignupForm = () => {
               <Input
                 type="text"
                 placeholder="First name..."
-                error={errors.firstName}
+                error={!!errors.firstName}
                 {...register("firstName", {
                   required: "First name is required",
                   minLength: {
@@ -82,7 +82,7 @@ const SignupForm = () => {
               <Input
                 type="text"
                 placeholder="Last name"
-                error={errors.lastName}
+                error={!!errors.lastName}
                 {...register("lastName", {
                   required: "Last name is required",
                   minLength: {
@@ -100,7 +100,7 @@ const SignupForm = () => {
           <Input
             type="text"
             placeholder="Username..."
-            error={errors.username}
+            error={!!errors.username}
             {...register("username", {
               required: "Username is required",
               minLength: {
@@ -121,7 +121,7 @@ const SignupForm = () => {
           <Input
             type="email"
             placeholder="Email address"
-            error={errors.email}
+            error={!!errors.email}
             {...register("email", {
               required: "Email is required",
               pattern: {
@@ -137,7 +137,7 @@ const SignupForm = () => {
           <FormField label="Password" error={errors.password?.message}>
             <PasswordInput
               placeholder="Create password"
-              error={errors.password}
+              error={!!errors.password}
               showPassword={showPassword}
               onToggle={() => setShowPassword(!showPassword)}
               {...register("password", {
@@ -161,7 +161,7 @@ const SignupForm = () => {
           >
             <PasswordInput
               placeholder="Confirm password"
-              error={errors.confirmPassword}
+              error={!!errors.confirmPassword}
               showPassword={showConfirmPassword}
               onToggle={() => setShowConfirmPassword(!showConfirmPassword)}
               {...register("confirmPassword", {
