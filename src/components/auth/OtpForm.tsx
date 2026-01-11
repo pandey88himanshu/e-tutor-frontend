@@ -5,7 +5,7 @@ import { useForm, Controller } from "react-hook-form";
 import DarkBgBtn from "../common/DarkBgBtn";
 import SuccessToast from "@/components/ui/SuccessToast";
 import ErrorToast from "@/components/ui/ErrorToast";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   useResendOtpMutation,
   useVerifyOtpMutation,
@@ -23,8 +23,13 @@ const OtpForm = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [resendTimer, setResendTimer] = useState(30); // Added timer state
+  const [resendTimer, setResendTimer] = useState(30);
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // ✅ Check if this is a Google OAuth signup
+  const isGoogleSignup = searchParams.get("provider") === "google";
+  const emailFromUrl = searchParams.get("email");
 
   const {
     control,
@@ -54,6 +59,11 @@ const OtpForm = () => {
       if (interval) clearInterval(interval);
     };
   }, [resendTimer]);
+
+  // ✅ Auto-focus first input on mount
+  useEffect(() => {
+    inputRefs.current[0]?.focus();
+  }, []);
 
   const handleChange = (
     value: string,
@@ -95,7 +105,8 @@ const OtpForm = () => {
         return;
       }
 
-      const email = localStorage.getItem("pendingSignupEmail");
+      // ✅ Get email from URL params (Google OAuth) or localStorage (regular signup)
+      const email = emailFromUrl || localStorage.getItem("pendingSignupEmail");
 
       if (!email) {
         setErrorMessage("Session expired. Please sign up again.");
@@ -109,15 +120,27 @@ const OtpForm = () => {
         otp: otpCode,
       }).unwrap();
 
+      // ✅ Clean up localStorage
       localStorage.removeItem("pendingSignupEmail");
 
-      setSuccessMessage(response.message || "Signup successful");
+      // ✅ Store access token if returned
+      if (response.accessToken) {
+        localStorage.setItem("accessToken", response.accessToken);
+      }
+
+      setSuccessMessage(
+        response.message ||
+          (isGoogleSignup
+            ? "Google account verified successfully!"
+            : "Signup successful!")
+      );
       setShowSuccess(true);
 
       setTimeout(() => {
         setShowSuccess(false);
-        router.push("/sign-in");
-      }, 2500);
+        // ✅ Redirect to home if logged in, otherwise sign-in page
+        router.push(response.accessToken ? "/" : "/sign-in");
+      }, 2000);
     } catch (err: any) {
       console.error("OTP verification error:", err);
 
@@ -132,10 +155,11 @@ const OtpForm = () => {
   };
 
   const handleResendOtp = async () => {
-    if (resendTimer > 0) return; // Prevent resend if timer is active
+    if (resendTimer > 0) return;
 
     try {
-      const email = localStorage.getItem("pendingSignupEmail");
+      const email = emailFromUrl || localStorage.getItem("pendingSignupEmail");
+
       if (!email) {
         setErrorMessage("Session expired. Please sign up again.");
         setShowError(true);
@@ -156,13 +180,12 @@ const OtpForm = () => {
       setShowSuccess(true);
       setTimeout(() => setShowSuccess(false), 3000);
     } catch (err: any) {
-      // Extract wait time from error message if present
       const errorMsg =
         err?.data?.message ||
         err?.message ||
         "Failed to resend OTP. Please try again.";
 
-      // Check if error contains wait time (e.g., "Please wait 43 seconds before resending")
+      // Extract wait time from error message
       const waitTimeMatch = errorMsg.match(/wait (\d+) seconds/);
       if (waitTimeMatch) {
         const waitTime = parseInt(waitTimeMatch[1]);
@@ -182,7 +205,9 @@ const OtpForm = () => {
         Verify OTP
       </h1>
       <p className="mb-6 body-md-400 text-[rgb(var(--gray-600))]">
-        Enter the 4-digit code sent to your email.
+        {isGoogleSignup
+          ? "We've sent a verification code to your email to complete your Google sign-up."
+          : "Enter the 4-digit code sent to your email."}
       </p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
@@ -215,7 +240,7 @@ const OtpForm = () => {
                       errors.otp
                         ? "border-[rgb(var(--danger-500))]"
                         : "border-[rgb(var(--gray-200))]"
-                    } text-center text-xl font-semibold focus:outline-none focus:ring-2`}
+                    } text-center text-xl font-semibold focus:outline-none focus:ring-2 focus:ring-[rgb(var(--primary-500))]`}
                   />
                 ))}
               </div>

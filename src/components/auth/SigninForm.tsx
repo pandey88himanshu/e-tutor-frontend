@@ -82,7 +82,9 @@ const SigninForm = () => {
       }, 3000);
     }
   };
-
+  const handleGoogleSignin = () => {
+    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google`;
+  };
   return (
     <div className="flex w-full flex-col">
       <h1 className="heading-03 mb-6 text-[rgb(var(--gray-900))]">
@@ -148,7 +150,11 @@ const SigninForm = () => {
       </div>
 
       {/* Google OAuth */}
-      <button className="flex h-12 w-full items-center justify-center gap-3 rounded-md border border-[rgb(var(--gray-200))] body-md-500 text-[rgb(var(--gray-700))] hover:bg-[rgb(var(--gray-50))]">
+      <button
+        type="button"
+        onClick={handleGoogleSignin} // ✅ Add onClick handler
+        className="flex h-12 w-full items-center justify-center gap-3 rounded-md border border-[rgb(var(--gray-200))] body-md-500 text-[rgb(var(--gray-700))] hover:bg-[rgb(var(--gray-50))]"
+      >
         <Image
           src="/icons/google.svg"
           alt="Google Logo"

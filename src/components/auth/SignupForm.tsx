@@ -94,6 +94,9 @@ const SignupForm = () => {
       }, 3000);
     }
   };
+  const handleGoogleSignup = () => {
+    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google`;
+  };
 
   return (
     <div className="flex min-h-full flex-col justify-center">
@@ -260,7 +263,11 @@ const SignupForm = () => {
       </div>
 
       {/* Google OAuth */}
-      <button className="flex h-12 w-full items-center justify-center gap-3 rounded-md border border-[rgb(var(--gray-200))] body-md-500 text-[rgb(var(--gray-700))] hover:bg-[rgb(var(--gray-50))]">
+      <button
+        type="button"
+        onClick={handleGoogleSignup}
+        className="flex h-12 w-full items-center justify-center gap-3 rounded-md border border-[rgb(var(--gray-200))] body-md-500 text-[rgb(var(--gray-700))] hover:bg-[rgb(var(--gray-50))]"
+      >
         <Image
           src="/icons/google.svg"
           alt="Google Logo"

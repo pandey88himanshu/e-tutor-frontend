@@ -11,41 +11,52 @@ interface AuthState {
   user: User | null;
 }
 
-// Initialize from localStorage for persistence
+// ✅ FIXED: Safe initialization
 const initialState: AuthState = {
-  accessToken:
-    typeof window !== "undefined" ? localStorage.getItem("accessToken") : null,
-  user:
-    typeof window !== "undefined"
-      ? JSON.parse(localStorage.getItem("user") || "null")
-      : null,
+  accessToken: null,
+  user: null,
 };
+
+// Load from localStorage SAFELY only AFTER checking validity
+if (typeof window !== "undefined") {
+  try {
+    const token = localStorage.getItem("accessToken");
+    const userStr = localStorage.getItem("user");
+
+    if (token && userStr) {
+      const user = JSON.parse(userStr);
+      // ✅ Validate user object structure
+      if (user && user.id && (user.username || user.email)) {
+        initialState.accessToken = token;
+        initialState.user = user;
+      }
+    }
+  } catch (error) {
+    console.error("❌ Invalid localStorage auth data, clearing...");
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("user");
+  }
+}
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    // Set accessToken and optionally user
     setCredentials: (
       state,
-      action: PayloadAction<{ accessToken: string; user?: User }>
+      action: PayloadAction<{ accessToken: string; user: User }>
     ) => {
+      console.log("🔧 setCredentials:", action.payload.user); // DEBUG
+
       state.accessToken = action.payload.accessToken;
+      state.user = action.payload.user;
 
-      if (action.payload.user) {
-        state.user = action.payload.user;
-      }
-
-      // Persist in localStorage
       if (typeof window !== "undefined") {
         localStorage.setItem("accessToken", action.payload.accessToken);
-        if (action.payload.user) {
-          localStorage.setItem("user", JSON.stringify(action.payload.user));
-        }
+        localStorage.setItem("user", JSON.stringify(action.payload.user));
       }
     },
 
-    // Only update accessToken (for refresh flow)
     updateAccessToken: (state, action: PayloadAction<string>) => {
       state.accessToken = action.payload;
       if (typeof window !== "undefined") {
@@ -60,6 +71,7 @@ const authSlice = createSlice({
       if (typeof window !== "undefined") {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("user");
+        localStorage.removeItem("pendingSignupEmail");
       }
     },
   },
