@@ -16,8 +16,8 @@ const AuthVisual = ({
       <Image
         src={imageSrc}
         alt={alt}
-        width={836}
-        height={836}
+        width={736}
+        height={736}
         priority
         className="max-h-full max-w-full object-contain"
       />
