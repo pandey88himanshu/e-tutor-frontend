@@ -3,38 +3,76 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store"; // Adjust path to your store
-import { FaBell, FaHeart, FaShoppingCart } from "react-icons/fa";
+import { useEffect, useState, useRef } from "react";
+import {
+  FaBell,
+  FaHeart,
+  FaShoppingCart,
+  FaTimes,
+  FaUser,
+  FaBook,
+  FaChevronDown,
+} from "react-icons/fa";
 import LightBgBtn from "./LightBgBtn";
 import DarkBgBtn from "./DarkBgBtn";
 
 const NavBar = () => {
   const [open, setOpen] = useState(false);
+  const [profileDropdown, setProfileDropdown] = useState(false);
   const pathname = usePathname();
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // ✅ Redux selectors for auth state
-  const user = useSelector((state: RootState) => state.auth.user);
-  console.log(user, "*******this is user********");
-  const accessToken = useSelector((state: RootState) => state.auth.accessToken);
+  // ✅ Local auth state (Redux removed)
+  const [user, setUser] = useState<any>(null);
+  const [accessToken, setAccessToken] = useState<string | null>(null);
 
-  // ✅ Check if user is logged in
+  // ✅ Read auth data from localStorage
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    const storedUser = localStorage.getItem("user");
+
+    setAccessToken(token);
+
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch {
+        setUser(null);
+      }
+    }
+  }, []);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setProfileDropdown(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // ✅ Check if user is logged in (UNCHANGED)
   const isLoggedIn = !!accessToken && !!user;
 
-  // Auth page checks
+  // Auth page checks (UNCHANGED)
   const isSignUpPage = pathname === "/sign-up";
   const isSignInPage = pathname === "/sign-in";
   const isOTPPage = pathname === "/verify-otp";
   const isAuthPage = isSignUpPage || isSignInPage || isOTPPage;
 
-  // ✅ Logout handler
+  // ✅ Logout handler (logic unchanged)
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
+    localStorage.removeItem("user");
     localStorage.removeItem("pendingSignupEmail");
-    // Optionally dispatch logout action
-    // dispatch(logout());
     setOpen(false);
+    setProfileDropdown(false);
     window.location.href = "/";
   };
 
@@ -56,7 +94,7 @@ const NavBar = () => {
             </Link>
           </div>
 
-          {/* Search Bar (Desktop Only) - Show on non-auth pages when logged in or not auth page */}
+          {/* Search Bar */}
           {(!isAuthPage || isLoggedIn) && (
             <div className="hidden lg:flex flex-1 items-center gap-4">
               <div className="flex h-12 flex-1 items-center rounded-md border border-[rgb(var(--gray-200))] px-4">
@@ -71,37 +109,70 @@ const NavBar = () => {
           {/* Desktop Actions */}
           {!isAuthPage ? (
             <>
-              {/* ✅ LOGGED IN USER - Desktop */}
               {isLoggedIn ? (
                 <div className="hidden md:flex items-center gap-5">
                   <FaBell className="text-[rgb(var(--gray-700))] cursor-pointer hover:text-[rgb(var(--primary-500))] transition-colors" />
                   <FaHeart className="text-[rgb(var(--gray-700))] cursor-pointer hover:text-[rgb(var(--primary-500))] transition-colors" />
                   <FaShoppingCart className="text-[rgb(var(--gray-700))] cursor-pointer hover:text-[rgb(var(--primary-500))] transition-colors" />
 
-                  {/* ✅ User Profile Section */}
-                  <div className="flex items-center gap-3 border-l border-[rgb(var(--gray-200))] pl-4">
-                    <div className="w-8 h-8 bg-[rgb(var(--primary-100))] rounded-full flex items-center justify-center">
-                      <span className="text-sm font-semibold text-[rgb(var(--primary-700))] uppercase">
-                        {user?.username?.[0] || user?.email?.[0] || "U"}
+                  <div
+                    className="flex items-center gap-3 border-l border-[rgb(var(--gray-200))] pl-4 relative"
+                    ref={dropdownRef}
+                  >
+                    <button
+                      onClick={() => setProfileDropdown(!profileDropdown)}
+                      className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+                    >
+                      <div className="w-8 h-8 bg-[rgb(var(--primary-100))] rounded-full flex items-center justify-center">
+                        <span className="text-sm font-semibold text-[rgb(var(--primary-700))] uppercase">
+                          {user?.username?.[0] || user?.email?.[0] || "U"}
+                        </span>
+                      </div>
+                      <span className="body-sm-500 text-[rgb(var(--gray-900))] max-w-30 truncate">
+                        {user?.username || user?.email}
                       </span>
-                    </div>
-                    <span className="body-sm-500 text-[rgb(var(--gray-900))] max-w-[120px] truncate">
-                      {user?.username || user?.email}
-                    </span>
-                    <DarkBgBtn
-                      onClick={handleLogout}
-                      children="Logout"
-                      className="px-4 py-2"
-                    />
+                      <FaChevronDown
+                        className={`text-[rgb(var(--gray-600))] text-xs transition-transform ${
+                          profileDropdown ? "rotate-180" : ""
+                        }`}
+                      />
+                    </button>
+
+                    {/* Profile Dropdown */}
+                    {profileDropdown && (
+                      <div className="absolute top-full right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-[rgb(var(--gray-200))] py-2 z-50">
+                        <Link
+                          href="/profile"
+                          className="flex items-center gap-3 px-4 py-2.5 hover:bg-[rgb(var(--gray-50))] transition-colors"
+                          onClick={() => setProfileDropdown(false)}
+                        >
+                          <FaUser className="text-[rgb(var(--gray-600))]" />
+                          <span className="text-sm text-[rgb(var(--gray-900))]">
+                            Profile
+                          </span>
+                        </Link>
+                        <Link
+                          href="/my-courses"
+                          className="flex items-center gap-3 px-4 py-2.5 hover:bg-[rgb(var(--gray-50))] transition-colors"
+                          onClick={() => setProfileDropdown(false)}
+                        >
+                          <FaBook className="text-[rgb(var(--gray-600))]" />
+                          <span className="text-sm text-[rgb(var(--gray-900))]">
+                            My Courses
+                          </span>
+                        </Link>
+                        <div className="border-t border-[rgb(var(--gray-200))] my-2"></div>
+
+                        <DarkBgBtn onClick={handleLogout} children="Logout" />
+                      </div>
+                    )}
                   </div>
                 </div>
               ) : (
-                /* GUEST USER - Desktop */
                 <div className="hidden md:flex items-center gap-5">
-                  <FaBell className="text-[rgb(var(--gray-700))] cursor-pointer hover:text-[rgb(var(--primary-500))] transition-colors opacity-50" />
-                  <FaHeart className="text-[rgb(var(--gray-700))] cursor-pointer hover:text-[rgb(var(--primary-500))] transition-colors opacity-50" />
-                  <FaShoppingCart className="text-[rgb(var(--gray-700))] cursor-pointer hover:text-[rgb(var(--primary-500))] transition-colors opacity-50" />
-
+                  <FaBell className="text-[rgb(var(--gray-700))] opacity-50" />
+                  <FaHeart className="text-[rgb(var(--gray-700))] opacity-50" />
+                  <FaShoppingCart className="text-[rgb(var(--gray-700))] opacity-50" />
                   <LightBgBtn href="/sign-up" children="Create Account" />
                   <DarkBgBtn href="/sign-in" children="Sign In" />
                 </div>
@@ -109,7 +180,6 @@ const NavBar = () => {
             </>
           ) : (
             <>
-              {/* Auth Page CTAs */}
               {isSignUpPage && (
                 <div className="hidden md:flex items-center gap-3">
                   <p className="body-sm-400 text-[rgb(var(--gray-600))]">
@@ -141,229 +211,192 @@ const NavBar = () => {
 
           {/* Mobile Hamburger */}
           <button
-            className="md:hidden flex items-center justify-center rounded-md p-2 text-[rgb(var(--gray-700))] focus:outline-none focus:ring-2 focus:ring-[rgb(var(--primary-500))]"
+            className="md:hidden flex items-center justify-center rounded-md p-2 text-[rgb(var(--gray-700))] text-2xl"
             onClick={() => setOpen(!open)}
-            aria-label="Toggle menu"
           >
-            <svg
-              className="h-6 w-6"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-            >
-              {open ? (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              ) : (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              )}
-            </svg>
+            ☰
           </button>
         </div>
       </nav>
 
-      {/* Slide-in Mobile Menu */}
+      {/* Mobile Menu */}
       <div
-        className={`fixed inset-0 z-50 transform transition-transform duration-300 ease-in-out ${
+        className={`fixed inset-0 z-50 transform transition-transform duration-300 ${
           open ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        {/* Backdrop */}
         <div
           className="absolute inset-0 bg-black/50"
           onClick={() => setOpen(false)}
         />
 
-        {/* Menu Panel */}
-        <div className="absolute right-0 top-0 h-full w-80 max-w-full bg-[rgb(var(--white))] shadow-xl overflow-y-auto">
-          {/* Header with Close Button */}
-          <div className="flex items-center justify-between border-b border-[rgb(var(--gray-200))] p-4">
-            <h2 className="text-lg font-semibold">
+        <div className="absolute right-0 top-0 h-full w-80 bg-white shadow-xl overflow-y-auto">
+          {/* Mobile Menu Header */}
+          <div className="p-4 border-b flex items-center justify-between">
+            <h2 className="font-semibold text-lg text-[rgb(var(--gray-900))]">
               {isLoggedIn ? `Hi, ${user?.username || user?.email}` : "Menu"}
             </h2>
             <button
               onClick={() => setOpen(false)}
-              className="rounded-md p-2 text-[rgb(var(--gray-700))] hover:bg-[rgb(var(--gray-100))]"
-              aria-label="Close menu"
+              className="p-2 hover:bg-[rgb(var(--gray-100))] rounded-md transition-colors"
             >
-              <svg
-                className="h-6 w-6"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
+              <FaTimes className="text-[rgb(var(--gray-700))]" />
             </button>
           </div>
 
           {/* Mobile Menu Content */}
-          {!isAuthPage ? (
-            <>
-              {isLoggedIn ? (
-                /* ✅ LOGGED IN USER - Mobile */
-                <div className="p-6 space-y-6">
-                  {/* Search Section */}
-                  <div className="space-y-3">
-                    <div className="flex h-12 w-full items-center rounded-md border border-[rgb(var(--gray-200))] px-4">
-                      <input
-                        placeholder="What do you want learn..."
-                        className="body-sm-400 w-full bg-transparent outline-none text-[rgb(var(--gray-700))]"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Icons Section */}
-                  <div className="flex items-center justify-around py-4 border-y border-[rgb(var(--gray-200))]">
-                    <div className="flex flex-col items-center gap-2 cursor-pointer">
-                      <FaBell className="text-xl text-[rgb(var(--gray-700))]" />
-                      <span className="text-xs text-[rgb(var(--gray-600))]">
-                        Notifications
-                      </span>
-                    </div>
-                    <div className="flex flex-col items-center gap-2 cursor-pointer">
-                      <FaHeart className="text-xl text-[rgb(var(--gray-700))]" />
-                      <span className="text-xs text-[rgb(var(--gray-600))]">
-                        Wishlist
-                      </span>
-                    </div>
-                    <div className="flex flex-col items-center gap-2 cursor-pointer">
-                      <FaShoppingCart className="text-xl text-[rgb(var(--gray-700))]" />
-                      <span className="text-xs text-[rgb(var(--gray-600))]">
-                        Cart
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* User Profile & Logout */}
-                  <div className="space-y-4 pt-4 border-t border-[rgb(var(--gray-200))]">
-                    <div className="flex items-center gap-3 p-3 bg-[rgb(var(--gray-50))] rounded-lg">
-                      <div className="w-10 h-10 bg-[rgb(var(--primary-100))] rounded-full flex items-center justify-center flex-shrink-0">
-                        <span className="text-sm font-semibold text-[rgb(var(--primary-700))] uppercase">
-                          {user?.username?.[0] || user?.email?.[0] || "U"}
-                        </span>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-semibold text-[rgb(var(--gray-900))] truncate">
-                          {user?.username || user?.email}
-                        </p>
-                        <p className="text-xs text-[rgb(var(--gray-500))] truncate">
-                          {user?.email}
-                        </p>
-                      </div>
-                    </div>
-                    <DarkBgBtn
-                      onClick={handleLogout}
-                      children="Logout"
-                      className="w-full"
-                    />
-                  </div>
+          <div className="p-4 space-y-4">
+            {/* User Profile Section (for logged in users) */}
+            {isLoggedIn && (
+              <div className="flex items-center gap-3 pb-3 border-b border-[rgb(var(--gray-200))]">
+                <div className="w-10 h-10 bg-[rgb(var(--primary-100))] rounded-full flex items-center justify-center">
+                  <span className="text-base font-semibold text-[rgb(var(--primary-700))] uppercase">
+                    {user?.username?.[0] || user?.email?.[0] || "U"}
+                  </span>
                 </div>
+                <div className="flex-1">
+                  <p className="font-medium text-sm text-[rgb(var(--gray-900))]">
+                    {user?.username || "User"}
+                  </p>
+                  <p className="text-xs text-[rgb(var(--gray-600))] truncate">
+                    {user?.email}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Search Bar in Menu */}
+            {(!isAuthPage || isLoggedIn) && (
+              <div className="pb-3 border-b border-[rgb(var(--gray-200))]">
+                <div className="flex h-10 items-center rounded-md border border-[rgb(var(--gray-200))] px-3 bg-[rgb(var(--gray-50))]">
+                  <input
+                    placeholder="What do you want learn..."
+                    className="text-sm w-full bg-transparent outline-none text-[rgb(var(--gray-700))] placeholder:text-[rgb(var(--gray-400))]"
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Quick Actions Icons - Compact */}
+            <div className="flex items-center justify-around py-2 border-b border-[rgb(var(--gray-200))]">
+              <button
+                className="flex flex-col items-center gap-1"
+                disabled={!isLoggedIn}
+              >
+                <FaBell
+                  className={`text-xl ${
+                    isLoggedIn
+                      ? "text-[rgb(var(--gray-700))]"
+                      : "text-[rgb(var(--gray-400))]"
+                  }`}
+                />
+                <span className="text-xs text-[rgb(var(--gray-600))]">
+                  Notifications
+                </span>
+              </button>
+              <button
+                className="flex flex-col items-center gap-1"
+                disabled={!isLoggedIn}
+              >
+                <FaHeart
+                  className={`text-xl ${
+                    isLoggedIn
+                      ? "text-[rgb(var(--gray-700))]"
+                      : "text-[rgb(var(--gray-400))]"
+                  }`}
+                />
+                <span className="text-xs text-[rgb(var(--gray-600))]">
+                  Wishlist
+                </span>
+              </button>
+              <button
+                className="flex flex-col items-center gap-1"
+                disabled={!isLoggedIn}
+              >
+                <FaShoppingCart
+                  className={`text-xl ${
+                    isLoggedIn
+                      ? "text-[rgb(var(--gray-700))]"
+                      : "text-[rgb(var(--gray-400))]"
+                  }`}
+                />
+                <span className="text-xs text-[rgb(var(--gray-600))]">
+                  Cart
+                </span>
+              </button>
+            </div>
+
+            {/* Navigation Links (for logged in users) */}
+            {isLoggedIn && (
+              <div className="space-y-2 pb-3 border-b border-[rgb(var(--gray-200))]">
+                <Link
+                  href="/profile"
+                  className="flex items-center gap-3 p-3 rounded-lg hover:bg-[rgb(var(--gray-50))] transition-colors"
+                  onClick={() => setOpen(false)}
+                >
+                  <FaUser className="text-[rgb(var(--gray-600))]" />
+                  <span className="text-sm text-[rgb(var(--gray-900))]">
+                    Profile
+                  </span>
+                </Link>
+                <Link
+                  href="/my-courses"
+                  className="flex items-center gap-3 p-3 rounded-lg hover:bg-[rgb(var(--gray-50))] transition-colors"
+                  onClick={() => setOpen(false)}
+                >
+                  <FaBook className="text-[rgb(var(--gray-600))]" />
+                  <span className="text-sm text-[rgb(var(--gray-900))]">
+                    My Courses
+                  </span>
+                </Link>
+              </div>
+            )}
+
+            {/* Auth Buttons */}
+            <div className="space-y-2 pt-2">
+              {!isAuthPage ? (
+                <>
+                  {isLoggedIn ? (
+                    <DarkBgBtn onClick={handleLogout} children="Logout" />
+                  ) : (
+                    <>
+                      <LightBgBtn href="/sign-up" children="Create Account" />
+                      <DarkBgBtn href="/sign-in" children="Sign In" />
+                    </>
+                  )}
+                </>
               ) : (
-                /* GUEST USER - Mobile */
-                <div className="p-6 space-y-6">
-                  {/* Search Section */}
-                  <div className="space-y-3">
-                    <div className="flex h-12 w-full items-center rounded-md border border-[rgb(var(--gray-200))] px-4">
-                      <input
-                        placeholder="What do you want learn..."
-                        className="body-sm-400 w-full bg-transparent outline-none text-[rgb(var(--gray-700))]"
-                      />
+                <>
+                  {isSignUpPage && (
+                    <div className="space-y-2">
+                      <p className="body-sm-400 text-[rgb(var(--gray-600))] text-center">
+                        Have an account?
+                      </p>
+                      <LightBgBtn href="/sign-in" children="Login Account" />
                     </div>
-                  </div>
+                  )}
 
-                  {/* Icons Section (Disabled for guests) */}
-                  <div className="flex items-center justify-around py-4 border-y border-[rgb(var(--gray-200))]">
-                    <div className="flex flex-col items-center gap-2 cursor-pointer opacity-50">
-                      <FaBell className="text-xl text-[rgb(var(--gray-700))]" />
-                      <span className="text-xs text-[rgb(var(--gray-600))]">
-                        Notifications
-                      </span>
+                  {isSignInPage && (
+                    <div className="space-y-2">
+                      <p className="body-sm-400 text-[rgb(var(--gray-600))] text-center">
+                        Don't have an account?
+                      </p>
+                      <LightBgBtn href="/sign-up" children="Create Account" />
                     </div>
-                    <div className="flex flex-col items-center gap-2 cursor-pointer opacity-50">
-                      <FaHeart className="text-xl text-[rgb(var(--gray-700))]" />
-                      <span className="text-xs text-[rgb(var(--gray-600))]">
-                        Wishlist
-                      </span>
-                    </div>
-                    <div className="flex flex-col items-center gap-2 cursor-pointer opacity-50">
-                      <FaShoppingCart className="text-xl text-[rgb(var(--gray-700))]" />
-                      <span className="text-xs text-[rgb(var(--gray-600))]">
-                        Cart
-                      </span>
-                    </div>
-                  </div>
+                  )}
 
-                  {/* Auth Buttons */}
-                  <div className="space-y-3">
-                    <LightBgBtn
-                      href="/auth/sign-up"
-                      onClick={() => setOpen(false)}
-                      children="Create Account"
-                    />
-                    <DarkBgBtn
-                      href="/auth/sign-in"
-                      onClick={() => setOpen(false)}
-                      children="Sign In"
-                    />
-                  </div>
-                </div>
+                  {isOTPPage && (
+                    <div className="space-y-2">
+                      <p className="body-sm-400 text-[rgb(var(--gray-600))] text-center">
+                        Facing Any Issues?
+                      </p>
+                      <LightBgBtn href="/sign-up" children="Go Back" />
+                    </div>
+                  )}
+                </>
               )}
-            </>
-          ) : (
-            /* Auth Page Mobile Menu */
-            <>
-              {isSignUpPage && (
-                <div className="p-6">
-                  <p className="mb-4 body-sm-400 text-[rgb(var(--gray-600))]">
-                    Have an account?
-                  </p>
-                  <LightBgBtn
-                    href="/auth/sign-in"
-                    onClick={() => setOpen(false)}
-                    children="Login Account"
-                  />
-                </div>
-              )}
-              {isSignInPage && (
-                <div className="p-6">
-                  <p className="mb-4 body-sm-400 text-[rgb(var(--gray-600))]">
-                    Don't have an account?
-                  </p>
-                  <LightBgBtn
-                    href="/auth/sign-up"
-                    onClick={() => setOpen(false)}
-                    children="Create Account"
-                  />
-                </div>
-              )}
-              {isOTPPage && (
-                <div className="p-6">
-                  <p className="mb-4 body-sm-400 text-[rgb(var(--gray-600))]">
-                    Facing Any Issues?
-                  </p>
-                  <LightBgBtn
-                    href="/auth/sign-up"
-                    onClick={() => setOpen(false)}
-                    children="Go Back"
-                  />
-                </div>
-              )}
-            </>
-          )}
+            </div>
+          </div>
         </div>
       </div>
     </>
