@@ -58,7 +58,6 @@ const SignupForm = () => {
     try {
       // Remove fields not needed by backend
       const { confirmPassword, agreeToTerms, ...payload } = data;
-
       const response = await signup(payload).unwrap();
 
       // Guard: ensure email exists before storing
@@ -99,20 +98,20 @@ const SignupForm = () => {
   };
 
   return (
-    <div className="flex min-h-full flex-col justify-center">
+    <div className='flex min-h-full flex-col justify-center'>
       {/* Heading */}
-      <h1 className="heading-03 mb-6 text-[rgb(var(--gray-900))]">
+      <h1 className='heading-03 mb-6 text-[rgb(var(--gray-900))]'>
         Create your account
       </h1>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
+      <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-5'>
         {/* Full Name */}
-        <div className="flex flex-col gap-2">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className='flex flex-col gap-2'>
+          <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
             <FormField error={errors.firstName?.message} label={"First Name"}>
               <Input
-                type="text"
-                placeholder="First name..."
+                type='text'
+                placeholder='First name...'
                 error={!!errors.firstName}
                 {...register("firstName", {
                   required: "First name is required",
@@ -126,8 +125,8 @@ const SignupForm = () => {
 
             <FormField error={errors.lastName?.message} label={"Last Name"}>
               <Input
-                type="text"
-                placeholder="Last name"
+                type='text'
+                placeholder='Last name'
                 error={!!errors.lastName}
                 {...register("lastName", {
                   required: "Last name is required",
@@ -142,10 +141,10 @@ const SignupForm = () => {
         </div>
 
         {/* Username */}
-        <FormField label="Username" error={errors.username?.message}>
+        <FormField label='Username' error={errors.username?.message}>
           <Input
-            type="text"
-            placeholder="Username..."
+            type='text'
+            placeholder='Username...'
             error={!!errors.username}
             {...register("username", {
               required: "Username is required",
@@ -163,10 +162,10 @@ const SignupForm = () => {
         </FormField>
 
         {/* Email */}
-        <FormField label="Email" error={errors.email?.message}>
+        <FormField label='Email' error={errors.email?.message}>
           <Input
-            type="email"
-            placeholder="Email address"
+            type='email'
+            placeholder='Email address'
             error={!!errors.email}
             {...register("email", {
               required: "Email is required",
@@ -179,10 +178,10 @@ const SignupForm = () => {
         </FormField>
 
         {/* Passwords */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <FormField label="Password" error={errors.password?.message}>
+        <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
+          <FormField label='Password' error={errors.password?.message}>
             <PasswordInput
-              placeholder="Create password"
+              placeholder='Create password'
               error={!!errors.password}
               showPassword={showPassword}
               onToggle={() => setShowPassword(!showPassword)}
@@ -202,11 +201,10 @@ const SignupForm = () => {
           </FormField>
 
           <FormField
-            label="Confirm Password"
-            error={errors.confirmPassword?.message}
-          >
+            label='Confirm Password'
+            error={errors.confirmPassword?.message}>
             <PasswordInput
-              placeholder="Confirm password"
+              placeholder='Confirm password'
               error={!!errors.confirmPassword}
               showPassword={showConfirmPassword}
               onToggle={() => setShowConfirmPassword(!showConfirmPassword)}
@@ -220,25 +218,25 @@ const SignupForm = () => {
         </div>
 
         {/* Terms */}
-        <div className="flex items-center justify-between">
-          <div className="flex flex-col gap-1">
-            <label className="flex items-center justify-center gap-2 body-sm-400 text-[rgb(var(--gray-600))]">
+        <div className='flex items-center justify-between'>
+          <div className='flex flex-col gap-1'>
+            <label className='flex items-center justify-center gap-2 body-sm-400 text-[rgb(var(--gray-600))]'>
               <input
-                type="checkbox"
-                className="h-4 w-4"
+                type='checkbox'
+                className='h-4 w-4'
                 {...register("agreeToTerms", {
                   required: "You must agree to the terms and conditions",
                 })}
               />
               <span>
                 I agree with all of your{" "}
-                <span className="cursor-pointer text-[rgb(var(--primary-500))]">
+                <span className='cursor-pointer text-[rgb(var(--primary-500))]'>
                   Terms & Conditions
                 </span>
               </span>
             </label>
             {errors.agreeToTerms && (
-              <p className="text-[rgb(var(--danger-500))] body-xs-400 ml-6">
+              <p className='text-[rgb(var(--danger-500))] body-xs-400 ml-6'>
                 {errors.agreeToTerms.message}
               </p>
             )}
@@ -247,30 +245,28 @@ const SignupForm = () => {
           {/* Submit */}
           <DarkBgBtn
             asButton={true}
-            type="submit"
-            disabled={isLoading || !agreeToTerms}
-          >
+            type='submit'
+            disabled={isLoading || !agreeToTerms}>
             {isLoading ? "Sending OTP..." : "Create Account"}
           </DarkBgBtn>
         </div>
       </form>
 
       {/* Divider */}
-      <div className="my-6 flex items-center gap-4">
-        <div className="h-px w-full bg-[rgb(var(--gray-200))]" />
-        <span className="body-sm-400 text-[rgb(var(--gray-500))]">OR</span>
-        <div className="h-px w-full bg-[rgb(var(--gray-200))]" />
+      <div className='my-6 flex items-center gap-4'>
+        <div className='h-px w-full bg-[rgb(var(--gray-200))]' />
+        <span className='body-sm-400 text-[rgb(var(--gray-500))]'>OR</span>
+        <div className='h-px w-full bg-[rgb(var(--gray-200))]' />
       </div>
 
       {/* Google OAuth */}
       <button
-        type="button"
+        type='button'
         onClick={handleGoogleSignup}
-        className="flex h-12 w-full items-center justify-center gap-3 rounded-md border border-[rgb(var(--gray-200))] body-md-500 text-[rgb(var(--gray-700))] hover:bg-[rgb(var(--gray-50))]"
-      >
+        className='flex h-12 w-full items-center justify-center gap-3 rounded-md border border-[rgb(var(--gray-200))] body-md-500 text-[rgb(var(--gray-700))] hover:bg-[rgb(var(--gray-50))]'>
         <Image
-          src="/icons/google.svg"
-          alt="Google Logo"
+          src='/icons/google.svg'
+          alt='Google Logo'
           width={20}
           height={20}
         />
