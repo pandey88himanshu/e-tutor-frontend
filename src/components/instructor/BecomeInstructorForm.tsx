@@ -61,20 +61,19 @@ const BecomeInstructorForm = () => {
   };
 
   return (
-    <div className="flex h-full flex-col justify-center">
+    <div className='flex h-full flex-col justify-center'>
       {/* Heading */}
-      <h1 className="heading-03 mb-4 text-[rgb(var(--gray-900))]">
+      <h1 className='heading-03 mb-4 text-[rgb(var(--gray-900))]'>
         Become an Instructor
       </h1>
 
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="grid grid-cols-1 gap-4 lg:grid-cols-2"
-      >
+        className='grid grid-cols-1 gap-4 lg:grid-cols-2'>
         {/* First Name */}
-        <FormField error={errors.firstName?.message} label="First Name">
+        <FormField error={errors.firstName?.message} label='First Name'>
           <Input
-            placeholder="First name"
+            placeholder='First name'
             error={!!errors.firstName}
             {...register("firstName", {
               required: "First name is required",
@@ -84,9 +83,9 @@ const BecomeInstructorForm = () => {
         </FormField>
 
         {/* Last Name */}
-        <FormField error={errors.lastName?.message} label="Last Name">
+        <FormField error={errors.lastName?.message} label='Last Name'>
           <Input
-            placeholder="Last name"
+            placeholder='Last name'
             error={!!errors.lastName}
             {...register("lastName", {
               required: "Last name is required",
@@ -96,10 +95,10 @@ const BecomeInstructorForm = () => {
         </FormField>
 
         {/* Email */}
-        <FormField label="Email" error={errors.email?.message}>
+        <FormField label='Email' error={errors.email?.message}>
           <Input
-            type="email"
-            placeholder="Email address"
+            type='email'
+            placeholder='Email address'
             error={!!errors.email}
             {...register("email", {
               required: "Email is required",
@@ -108,9 +107,9 @@ const BecomeInstructorForm = () => {
         </FormField>
 
         {/* Mobile */}
-        <FormField label="Mobile Number" error={errors.mobile?.message}>
+        <FormField label='Mobile Number' error={errors.mobile?.message}>
           <Input
-            placeholder="+91 XXXXX XXXXX"
+            placeholder='+91 XXXXX XXXXX'
             error={!!errors.mobile}
             {...register("mobile", {
               required: "Mobile number is required",
@@ -120,11 +119,10 @@ const BecomeInstructorForm = () => {
 
         {/* Experience */}
         <FormField
-          label="Years of Experience"
-          error={errors.experience?.message}
-        >
+          label='Years of Experience'
+          error={errors.experience?.message}>
           <Input
-            type="number"
+            type='number'
             error={!!errors.experience}
             {...register("experience", {
               required: "Experience is required",
@@ -134,12 +132,11 @@ const BecomeInstructorForm = () => {
         </FormField>
 
         {/* Level */}
-        <FormField label="Expertise Level" error={errors.level?.message}>
+        <FormField label='Expertise Level' error={errors.level?.message}>
           <select
-            className="h-12 w-full rounded-md border border-[rgb(var(--gray-200))] px-3 body-md-400"
-            {...register("level", { required: "Select your level" })}
-          >
-            <option value="">Select level</option>
+            className='h-12 w-full rounded-md border border-[rgb(var(--gray-200))] px-3 body-md-400'
+            {...register("level", { required: "Select your level" })}>
+            <option value=''>Select level</option>
             <option>Beginner</option>
             <option>Intermediate</option>
             <option>Advanced</option>
@@ -148,12 +145,11 @@ const BecomeInstructorForm = () => {
         </FormField>
 
         {/* Category */}
-        <FormField label="Teaching Category" error={errors.category?.message}>
+        <FormField label='Teaching Category' error={errors.category?.message}>
           <select
-            className="h-12 w-full rounded-md border border-[rgb(var(--gray-200))] px-3 body-md-400"
-            {...register("category", { required: "Category is required" })}
-          >
-            <option value="">Select category</option>
+            className='h-12 w-full rounded-md border border-[rgb(var(--gray-200))] px-3 body-md-400'
+            {...register("category", { required: "Category is required" })}>
+            <option value=''>Select category</option>
             <option>Development</option>
             <option>Design</option>
             <option>Business</option>
@@ -163,15 +159,11 @@ const BecomeInstructorForm = () => {
         </FormField>
 
         {/* About (full width but compact) */}
-        <FormField
-          label="About You"
-          error={errors.about?.message}
-          className="lg:col-span-2"
-        >
+        <FormField label='About You' error={errors.about?.message}>
           <textarea
             rows={3}
-            className="w-full rounded-md border border-[rgb(var(--gray-200))] px-3 py-2 body-md-400"
-            placeholder="Briefly describe your teaching experience"
+            className='w-full rounded-md border border-[rgb(var(--gray-200))] px-3 py-2 body-md-400'
+            placeholder='Briefly describe your teaching experience'
             {...register("about", {
               required: "This field is required",
               minLength: 50,
@@ -180,15 +172,15 @@ const BecomeInstructorForm = () => {
         </FormField>
 
         {/* Resume Upload */}
-        <FormField label="Resume (PDF)" error={errors.resume?.message}>
-          <label className="flex h-24 cursor-pointer flex-col items-center justify-center rounded-md border border-dashed border-[rgb(var(--gray-300))] hover:bg-[rgb(var(--gray-50))]">
-            <span className="text-2xl">📄</span>
-            <span className="body-sm-400 text-[rgb(var(--gray-600))]">
+        <FormField label='Resume (PDF)' error={errors.resume?.message}>
+          <label className='flex h-24 cursor-pointer flex-col items-center justify-center rounded-md border border-dashed border-[rgb(var(--gray-300))] hover:bg-[rgb(var(--gray-50))]'>
+            <span className='text-2xl'>📄</span>
+            <span className='body-sm-400 text-[rgb(var(--gray-600))]'>
               Click to upload
             </span>
             <input
-              type="file"
-              accept=".pdf,.doc,.docx"
+              type='file'
+              accept='.pdf,.doc,.docx'
               hidden
               {...register("resume", { required: true })}
             />
@@ -196,15 +188,15 @@ const BecomeInstructorForm = () => {
         </FormField>
 
         {/* Video Upload */}
-        <FormField label="Intro Video" error={errors.introVideo?.message}>
-          <label className="flex h-24 cursor-pointer flex-col items-center justify-center rounded-md border border-dashed border-[rgb(var(--gray-300))] hover:bg-[rgb(var(--gray-50))]">
-            <span className="text-2xl">🎥</span>
-            <span className="body-sm-400 text-[rgb(var(--gray-600))]">
+        <FormField label='Intro Video' error={errors.introVideo?.message}>
+          <label className='flex h-24 cursor-pointer flex-col items-center justify-center rounded-md border border-dashed border-[rgb(var(--gray-300))] hover:bg-[rgb(var(--gray-50))]'>
+            <span className='text-2xl'>🎥</span>
+            <span className='body-sm-400 text-[rgb(var(--gray-600))]'>
               Click to upload
             </span>
             <input
-              type="file"
-              accept="video/*"
+              type='file'
+              accept='video/*'
               hidden
               {...register("introVideo", { required: true })}
             />
@@ -212,8 +204,8 @@ const BecomeInstructorForm = () => {
         </FormField>
 
         {/* Submit */}
-        <div className="lg:col-span-2 flex justify-end">
-          <DarkBgBtn asButton type="submit">
+        <div className='lg:col-span-2 flex justify-end'>
+          <DarkBgBtn asButton type='submit'>
             Submit for Review
           </DarkBgBtn>
         </div>
@@ -221,12 +213,12 @@ const BecomeInstructorForm = () => {
 
       <SuccessToast
         isOpen={showSuccess}
-        message="Instructor application submitted successfully"
+        message='Instructor application submitted successfully'
         onClose={() => setShowSuccess(false)}
       />
       <ErrorToast
         isOpen={showError}
-        message="Something went wrong. Please try again."
+        message='Something went wrong. Please try again.'
         onClose={() => setShowError(false)}
       />
     </div>

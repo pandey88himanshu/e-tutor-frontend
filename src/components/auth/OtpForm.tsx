@@ -16,7 +16,7 @@ interface OtpFormData {
 }
 
 const OtpForm = () => {
-  const inputRefs = useRef<HTMLInputElement[]>([]);
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const [verifyOtp, { isLoading }] = useVerifyOtpMutation();
   const [resendOtp, { isLoading: isResending }] = useResendOtpMutation();
 
@@ -240,7 +240,9 @@ const OtpForm = () => {
               {value.map((digit, index) => (
                 <input
                   key={index}
-                  ref={(el) => el && (inputRefs.current[index] = el)}
+                  ref={(el) => {
+                    inputRefs.current[index] = el;
+                  }}
                   type='tel'
                   inputMode='numeric'
                   maxLength={1}
