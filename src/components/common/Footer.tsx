@@ -34,39 +34,39 @@ export default function Footer() {
   ];
 
   return (
-    <footer className='bg-[rgb(var(--gray-900))]'>
+    <footer className="bg-[rgb(var(--gray-900))]">
       {/* MAIN FOOTER */}
-      <div className='mx-auto max-w-7xl px-6 py-16'>
-        <div className='grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-5'>
+      <div className="mx-auto max-w-7xl px-6 py-16">
+        <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-5">
           {/* BRAND */}
-          <div className='lg:col-span-2'>
-            <div className='flex items-center gap-2'>
+          <div className="lg:col-span-2">
+            <div className="flex items-center gap-2">
               <Image
-                src='/web/512px-favicon.png'
-                alt='E-tutor'
+                src="/web/512px-favicon.png"
+                alt="E-tutor"
                 width={32}
                 height={32}
               />
-              <span className='heading-04 text-[rgb(var(--white))]'>
+              <span className="heading-04 text-[rgb(var(--white))]">
                 E-tutor
               </span>
             </div>
 
-            <p className='body-sm-400 mt-4 text-[rgb(var(--gray-400))] max-w-sm'>
+            <p className="body-sm-400 mt-4 text-[rgb(var(--gray-400))] max-w-sm">
               Aliquam rhoncus ligula est, non pulvinar elit convallis nec. Donec
               mattis odio at.
             </p>
 
             {/* SOCIALS */}
-            <div className='mt-6 flex gap-4'>
+            <div className="mt-6 flex gap-4">
               {SOCIAL_LINKS.map(({ name, href, Icon }) => (
                 <Link
                   key={name}
                   href={href}
-                  target='_blank'
-                  rel='noopener noreferrer'
+                  target="_blank"
+                  rel="noopener noreferrer"
                   aria-label={name}
-                  className='
+                  className="
         flex h-10 w-10 items-center justify-center
         rounded
         bg-[rgb(var(--gray-800))]
@@ -78,7 +78,8 @@ export default function Footer() {
         focus:ring-[rgb(var(--primary-500))]
         focus:ring-offset-2
         focus:ring-offset-[rgb(var(--gray-900))]
-      '>
+      "
+                >
                   <Icon size={18} />
                 </Link>
               ))}
@@ -87,7 +88,7 @@ export default function Footer() {
 
           {/* TOP CATEGORY */}
           <FooterColumn
-            title='TOP 4 CATEGORY'
+            title="TOP 4 CATEGORY"
             links={[
               "Development",
               "Finance & Accounting",
@@ -98,27 +99,34 @@ export default function Footer() {
 
           {/* QUICK LINKS */}
           <FooterColumn
-            title='QUICK LINKS'
+            title="QUICK LINKS"
             links={["About", "Become Instructor", "Contact", "Career"]}
+            href={["/about", "/become-instructor", "/contact", "/career"]}
           />
 
           {/* SUPPORT */}
           <FooterColumn
-            title='SUPPORT'
+            title="SUPPORT"
             links={[
               "Help Center",
               "FAQs",
               "Terms & Condition",
               "Privacy Policy",
             ]}
+            href={[
+              "/help-center",
+              "/faq",
+              "/terms-condition",
+              "/privacy-policy",
+            ]}
           />
         </div>
       </div>
 
       {/* BOTTOM BAR */}
-      <div className='border-t border-[rgb(var(--gray-800))]'>
-        <div className='mx-auto flex max-w-7xl flex-col gap-4 px-6 py-6 sm:flex-row sm:items-center sm:justify-between'>
-          <span className='body-xs-400 text-[rgb(var(--gray-500))]'>
+      <div className="border-t border-[rgb(var(--gray-800))]">
+        <div className="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-6 sm:flex-row sm:items-center sm:justify-between">
+          <span className="body-xs-400 text-[rgb(var(--gray-500))]">
             © All rights reserved. E-Tutor
           </span>
         </div>
@@ -129,16 +137,25 @@ export default function Footer() {
 
 /* ---------- Sub Components ---------- */
 
-function FooterColumn({ title, links }: { title: string; links: string[] }) {
+function FooterColumn({
+  title,
+  links,
+  href,
+}: {
+  title: string;
+  links: string[];
+  href?: string[];
+}) {
   return (
     <div>
-      <p className='label-lg mb-4 text-[rgb(var(--white))]'>{title}</p>
-      <ul className='space-y-3'>
+      <p className="label-lg mb-4 text-[rgb(var(--white))]">{title}</p>
+      <ul className="space-y-3">
         {links.map((item) => (
           <li key={item}>
             <Link
-              href='#'
-              className='body-sm-400 text-[rgb(var(--gray-400))] hover:text-[rgb(var(--white))]'>
+              href={href ? href[links.indexOf(item)] : "#"}
+              className="body-sm-400 text-[rgb(var(--gray-400))] hover:text-[rgb(var(--white))]"
+            >
               {item}
             </Link>
           </li>

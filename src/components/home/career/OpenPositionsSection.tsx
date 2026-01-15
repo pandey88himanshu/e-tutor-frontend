@@ -1,3 +1,4 @@
+import DarkBgBtn from "@/components/common/DarkBgBtn";
 import React from "react";
 
 // Job opening data type
@@ -95,23 +96,7 @@ const JobCard = ({
       </div>
 
       {/* Arrow Button */}
-      <button className="flex h-10 w-10 items-center justify-center rounded-md bg-[rgb(var(--primary-100))] transition-all duration-200 hover:bg-[rgb(var(--primary-200))]">
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 20 20"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M4.16667 10H15.8333M15.8333 10L10 4.16667M15.8333 10L10 15.8333"
-            stroke="rgb(var(--primary-500))"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      </button>
+      <DarkBgBtn href="/career/job-details" children="View Details" />
     </div>
   </div>
 );
