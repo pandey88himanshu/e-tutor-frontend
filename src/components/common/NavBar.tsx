@@ -15,6 +15,9 @@ import {
 } from "react-icons/fa";
 import LightBgBtn from "./LightBgBtn";
 import DarkBgBtn from "./DarkBgBtn";
+import { useLogoutMutation } from "@/store/api/authApi";
+import { useDispatch } from "react-redux";
+import { clearCredentials } from "@/store/slices/authSlice";
 
 const NavBar = () => {
   const [open, setOpen] = useState(false);
@@ -22,7 +25,11 @@ const NavBar = () => {
   const pathname = usePathname();
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // ✅ Local auth state (Redux removed)
+  // Redux dispatch and logout mutation
+  const dispatch = useDispatch();
+  const [logout] = useLogoutMutation();
+
+  // ✅ Local auth state
   const [user, setUser] = useState<any>(null);
   const [accessToken, setAccessToken] = useState<string | null>(null);
 
@@ -57,23 +64,29 @@ const NavBar = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // ✅ Check if user is logged in (UNCHANGED)
+  // ✅ Check if user is logged in
   const isLoggedIn = !!accessToken && !!user;
 
-  // Auth page checks (UNCHANGED)
+  // Auth page checks
   const isSignUpPage = pathname === "/sign-up";
   const isSignInPage = pathname === "/sign-in";
   const isOTPPage = pathname === "/verify-otp";
   const isAuthPage = isSignUpPage || isSignInPage || isOTPPage;
 
-  // ✅ Logout handler (logic unchanged)
-  const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("user");
-    localStorage.removeItem("pendingSignupEmail");
-    setOpen(false);
-    setProfileDropdown(false);
-    window.location.href = "/";
+  // ✅ FIXED: Proper logout handler that clears cookies
+  const handleLogout = async () => {
+    try {
+      // Call backend logout API (clears refresh token cookie)
+      await logout().unwrap();
+    } catch (error) {
+      console.error("Logout API failed:", error);
+    } finally {
+      // Always clear local state (this also clears the accessToken cookie)
+      dispatch(clearCredentials());
+      setOpen(false);
+      setProfileDropdown(false);
+      window.location.href = "/";
+    }
   };
 
   return (
@@ -132,9 +145,8 @@ const NavBar = () => {
                         {user?.username || user?.email}
                       </span>
                       <FaChevronDown
-                        className={`text-[rgb(var(--gray-600))] text-xs transition-transform ${
-                          profileDropdown ? "rotate-180" : ""
-                        }`}
+                        className={`text-[rgb(var(--gray-600))] text-xs transition-transform ${profileDropdown ? "rotate-180" : ""
+                          }`}
                       />
                     </button>
 
@@ -221,9 +233,8 @@ const NavBar = () => {
 
       {/* Mobile Menu */}
       <div
-        className={`fixed inset-0 z-50 transform transition-transform duration-300 ${
-          open ? "translate-x-0" : "translate-x-full"
-        }`}
+        className={`fixed inset-0 z-50 transform transition-transform duration-300 ${open ? "translate-x-0" : "translate-x-full"
+          }`}
       >
         <div
           className="absolute inset-0 bg-black/50"
@@ -284,11 +295,10 @@ const NavBar = () => {
                 disabled={!isLoggedIn}
               >
                 <FaBell
-                  className={`text-xl ${
-                    isLoggedIn
-                      ? "text-[rgb(var(--gray-700))]"
-                      : "text-[rgb(var(--gray-400))]"
-                  }`}
+                  className={`text-xl ${isLoggedIn
+                    ? "text-[rgb(var(--gray-700))]"
+                    : "text-[rgb(var(--gray-400))]"
+                    }`}
                 />
                 <span className="text-xs text-[rgb(var(--gray-600))]">
                   Notifications
@@ -299,11 +309,10 @@ const NavBar = () => {
                 disabled={!isLoggedIn}
               >
                 <FaHeart
-                  className={`text-xl ${
-                    isLoggedIn
-                      ? "text-[rgb(var(--gray-700))]"
-                      : "text-[rgb(var(--gray-400))]"
-                  }`}
+                  className={`text-xl ${isLoggedIn
+                    ? "text-[rgb(var(--gray-700))]"
+                    : "text-[rgb(var(--gray-400))]"
+                    }`}
                 />
                 <span className="text-xs text-[rgb(var(--gray-600))]">
                   Wishlist
@@ -314,11 +323,10 @@ const NavBar = () => {
                 disabled={!isLoggedIn}
               >
                 <FaShoppingCart
-                  className={`text-xl ${
-                    isLoggedIn
-                      ? "text-[rgb(var(--gray-700))]"
-                      : "text-[rgb(var(--gray-400))]"
-                  }`}
+                  className={`text-xl ${isLoggedIn
+                    ? "text-[rgb(var(--gray-700))]"
+                    : "text-[rgb(var(--gray-400))]"
+                    }`}
                 />
                 <span className="text-xs text-[rgb(var(--gray-600))]">
                   Cart

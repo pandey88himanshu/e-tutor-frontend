@@ -28,7 +28,10 @@ function setAccessTokenCookie(token: string) {
 
 function removeAccessTokenCookie() {
   if (typeof document !== "undefined") {
-    document.cookie = "accessToken=;Path=/;Max-Age=0;SameSite=Lax";
+    // Clear by setting expiry to past date and empty value
+    // Must match the path used when setting the cookie
+    document.cookie = "accessToken=;Path=/;Expires=Thu, 01 Jan 1970 00:00:00 GMT;Max-Age=0;SameSite=Lax";
+    console.log("🗑️ removeAccessTokenCookie called"); // Debug log
   }
 }
 
@@ -93,6 +96,7 @@ const authSlice = createSlice({
     },
 
     clearCredentials: (state) => {
+      console.log("🚪 clearCredentials called - logging out"); // Debug log
       state.accessToken = null;
       state.user = null;
 

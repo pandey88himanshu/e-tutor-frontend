@@ -123,14 +123,21 @@ export async function proxy(request: NextRequest) {
     // we'll need to check via a cookie that we set during login
     const accessToken = request.cookies.get("accessToken")?.value;
 
+    // DEBUG: Log all cookies
+    console.log("🔍 [Proxy] Path:", pathname);
+    console.log("🔍 [Proxy] AccessToken cookie:", accessToken ? "EXISTS" : "MISSING");
+    console.log("🔍 [Proxy] All cookies:", request.cookies.getAll().map(c => c.name));
+
     // If we have an access token, user is authenticated
     let isAuthenticated = !!accessToken;
 
     // If no access token, try to refresh using the refresh token cookie
     if (!isAuthenticated) {
+        console.log("🔄 [Proxy] No accessToken, attempting refresh...");
         const refreshResult = await refreshAccessToken(request);
 
         if (refreshResult?.accessToken) {
+            console.log("✅ [Proxy] Refresh succeeded, got new token");
             isAuthenticated = true;
 
             // Create response and set the new access token cookie
