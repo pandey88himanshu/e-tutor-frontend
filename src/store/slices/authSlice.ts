@@ -11,6 +11,27 @@ interface AuthState {
   user: User | null;
 }
 
+/* =======================
+   COOKIE HELPERS
+   =======================
+   These helpers manage the accessToken cookie for middleware authentication.
+*/
+
+function setAccessTokenCookie(token: string) {
+  if (typeof document !== "undefined") {
+    const isProduction = process.env.NODE_ENV === "production";
+    const maxAge = 60 * 15; // 15 minutes
+    const secure = isProduction ? ";Secure" : "";
+    document.cookie = `accessToken=${token};Path=/;Max-Age=${maxAge};SameSite=Lax${secure}`;
+  }
+}
+
+function removeAccessTokenCookie() {
+  if (typeof document !== "undefined") {
+    document.cookie = "accessToken=;Path=/;Max-Age=0;SameSite=Lax";
+  }
+}
+
 // ✅ FIXED: Safe initialization
 const initialState: AuthState = {
   accessToken: null,
@@ -29,12 +50,15 @@ if (typeof window !== "undefined") {
       if (user && user.id && (user.username || user.email)) {
         initialState.accessToken = token;
         initialState.user = user;
+        // Also ensure cookie is set on initial load
+        setAccessTokenCookie(token);
       }
     }
   } catch (error) {
     console.error("❌ Invalid localStorage auth data, clearing...");
     localStorage.removeItem("accessToken");
     localStorage.removeItem("user");
+    removeAccessTokenCookie();
   }
 }
 
@@ -54,6 +78,8 @@ const authSlice = createSlice({
       if (typeof window !== "undefined") {
         localStorage.setItem("accessToken", action.payload.accessToken);
         localStorage.setItem("user", JSON.stringify(action.payload.user));
+        // Set cookie for middleware authentication
+        setAccessTokenCookie(action.payload.accessToken);
       }
     },
 
@@ -61,6 +87,8 @@ const authSlice = createSlice({
       state.accessToken = action.payload;
       if (typeof window !== "undefined") {
         localStorage.setItem("accessToken", action.payload);
+        // Update cookie for middleware authentication
+        setAccessTokenCookie(action.payload);
       }
     },
 
@@ -72,6 +100,8 @@ const authSlice = createSlice({
         localStorage.removeItem("accessToken");
         localStorage.removeItem("user");
         localStorage.removeItem("pendingSignupEmail");
+        // Remove cookie for middleware authentication
+        removeAccessTokenCookie();
       }
     },
   },
