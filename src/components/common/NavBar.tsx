@@ -154,13 +154,13 @@ const NavBar = () => {
                     {profileDropdown && (
                       <div className="absolute top-full right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-[rgb(var(--gray-200))] py-2 z-50">
                         <Link
-                          href="/profile"
+                          href="/dashboard"
                           className="flex items-center gap-3 px-4 py-2.5 hover:bg-[rgb(var(--gray-50))] transition-colors"
                           onClick={() => setProfileDropdown(false)}
                         >
                           <FaUser className="text-[rgb(var(--gray-600))]" />
                           <span className="text-sm text-[rgb(var(--gray-900))]">
-                            Profile
+                            Dashboard
                           </span>
                         </Link>
                         <Link
@@ -338,13 +338,13 @@ const NavBar = () => {
             {isLoggedIn && (
               <div className="space-y-2 pb-3 border-b border-[rgb(var(--gray-200))]">
                 <Link
-                  href="/profile"
+                  href="/dashboard"
                   className="flex items-center gap-3 p-3 rounded-lg hover:bg-[rgb(var(--gray-50))] transition-colors"
                   onClick={() => setOpen(false)}
                 >
                   <FaUser className="text-[rgb(var(--gray-600))]" />
                   <span className="text-sm text-[rgb(var(--gray-900))]">
-                    Profile
+                    Dashboard
                   </span>
                 </Link>
                 <Link

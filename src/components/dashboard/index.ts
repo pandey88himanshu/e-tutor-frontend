@@ -1,0 +1,15 @@
+export { default as DashboardHeader } from "./DashboardHeader";
+export { default as DashboardTabs } from "./DashboardTabs";
+export { default as DashboardContent } from "./DashboardContent";
+export { default as StatsCard } from "./StatsCard";
+export { default as CourseCard } from "./CourseCard";
+export { default as CoursesCard } from "./CoursesCard";
+export { default as CoursesContent } from "./CoursesContent";
+export { default as TeacherCard } from "./TeacherCard";
+export { default as TeachersContent } from "./TeachersContent";
+export { default as MessageContent } from "./MessageContent";
+export { default as WishlistContent } from "./WishlistContent";
+export { default as PurchaseHistoryContent } from "./PurchaseHistoryContent";
+export { default as SettingsContent } from "./SettingsContent";
+export { default as DashboardPage } from "./DashboardPage";
+export type { TabName } from "./DashboardTabs";

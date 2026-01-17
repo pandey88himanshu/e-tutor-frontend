@@ -9,6 +9,8 @@ import type { NextRequest } from "next/server";
 */
 
 const protectedRoutes = [
+    "/dashboard",
+    "/dashboard/:path*",
     "/become-instructor-form",
     "/instructor-dashboard",
     "/instructor-dashboard/:path*",

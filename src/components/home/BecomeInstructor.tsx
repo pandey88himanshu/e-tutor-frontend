@@ -9,27 +9,24 @@ const steps = [
 
 const BecomeInstructor = () => {
   return (
-    <section className="w-full py-20 bg-[rgb(var(--white))]">
+    <section className="w-full py-12 sm:py-16 lg:py-20 bg-[rgb(var(--white))]">
       <div className="mx-auto max-w-480 px-4 sm:px-8 md:px-12 lg:px-75">
-        <div className="flex flex-col lg:flex-row gap-10 lg:gap-16 items-center">
+        <div className="flex flex-col 2xl:flex-row gap-8 sm:gap-10 2xl:gap-16 items-center">
           {/* Left Side - Orange Card */}
-          <div className="relative w-full lg:w-130 rounded-2xl overflow-hidden min-h-70 shrink-0 bg-[rgb(var(--primary-500))]">
+          <div className="relative w-full 2xl:w-130 rounded-2xl overflow-hidden min-h-[280px] sm:min-h-70 shrink-0 bg-[rgb(var(--primary-500))]">
             {/* Content */}
-            <div
-              className="relative z-10 p-8 lg:p-10 flex flex-col justify-center h-full"
-              style={{ maxWidth: "60%" }}
-            >
-              <h2 className="text-[32px] font-bold text-[rgb(var(--white))] mb-4 leading-tight">
+            <div className="relative z-10 p-6 sm:p-8 2xl:p-10 flex flex-col justify-center h-full max-w-lg lg:max-w-xl 2xl:max-w-none">
+              <h2 className="text-2xl sm:text-[28px] lg:text-[32px] font-bold text-[rgb(var(--white))] mb-3 sm:mb-4 leading-tight">
                 Become an instructor
               </h2>
-              <p className="text-base text-[rgb(var(--white))] opacity-90 mb-6 leading-relaxed">
+              <p className="text-sm sm:text-base text-[rgb(var(--white))] opacity-90 mb-5 sm:mb-6 leading-relaxed">
                 Instructors from around the world teach millions of students on
                 Udemy. We provide the tools and skills to teach what you love.
               </p>
-              <button className="inline-flex items-center gap-2 w-fit px-6 py-3 border border-[rgb(var(--white))] bg-transparent text-[rgb(var(--white))] rounded text-base font-semibold hover:bg-[rgba(255,255,255,0.1)] transition-colors">
+              <button className="inline-flex items-center gap-2 w-fit px-5 sm:px-6 py-2.5 sm:py-3 border border-[rgb(var(--white))] bg-transparent text-[rgb(var(--white))] rounded text-sm sm:text-base font-semibold hover:bg-[rgba(255,255,255,0.1)] transition-colors">
                 Start Teaching
                 <svg
-                  className="w-5 h-5"
+                  className="w-4 h-4 sm:w-5 sm:h-5"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -45,35 +42,34 @@ const BecomeInstructor = () => {
             </div>
 
             {/* Image positioned to the bottom-right */}
-            <div className="absolute right-0 bottom-0 w-55 h-65 lg:w-65 lg:h-70">
+            {/* <div className="absolute right-0 bottom-0 w-55 h-65 lg:w-65 lg:h-70">
               <Image
                 src="/home/career-hero.png"
                 alt="Become an instructor"
                 fill
                 className="object-contain object-bottom"
               />
-            </div>
+            </div> */}
           </div>
 
           {/* Right Side - Teaching Steps */}
-          <div className="flex-1">
-            <h3 className="text-2xl font-semibold text-[rgb(var(--gray-900))] mb-8">
+          <div className="flex-1 w-full">
+            <h3 className="text-xl sm:text-2xl font-semibold text-[rgb(var(--gray-900))] mb-6 sm:mb-8 text-center 2xl:text-left">
               Your teaching & earning steps
             </h3>
 
-            <div className="grid grid-cols-2 gap-x-10 gap-y-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-x-6 lg:gap-x-8 2xl:gap-x-10 gap-y-4 sm:gap-y-5">
               {steps.map((step) => (
-                <div key={step.number} className="flex items-center gap-3">
+                <div key={step.number} className="flex items-center gap-3 sm:gap-4">
                   <div
-                    className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 text-sm font-semibold ${
-                      step.highlight
-                        ? "bg-[rgb(var(--primary-500))] text-[rgb(var(--white))]"
-                        : "border border-[rgb(var(--gray-300))] bg-[rgb(var(--white))] text-[rgb(var(--gray-600))]"
-                    }`}
+                    className={`w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center shrink-0 text-sm font-semibold ${step.highlight
+                      ? "bg-[rgb(var(--primary-500))] text-[rgb(var(--white))]"
+                      : "border border-[rgb(var(--gray-300))] bg-[rgb(var(--white))] text-[rgb(var(--gray-600))]"
+                      }`}
                   >
                     {step.number}
                   </div>
-                  <span className="text-sm text-[rgb(var(--gray-700))]">
+                  <span className="text-sm sm:text-base text-[rgb(var(--gray-700))]">
                     {step.text}
                   </span>
                 </div>
