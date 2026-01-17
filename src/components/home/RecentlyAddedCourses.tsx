@@ -100,54 +100,52 @@ const RecentlyAddedCourses = () => {
   };
 
   return (
-    <section className="w-full py-20 bg-[rgb(var(--white))]">
-      <div className="mx-auto max-w-480 px-4 sm:px-8 md:px-12 lg:px-75">
+    <section className="w-full py-12 sm:py-16 lg:py-20 bg-[rgb(var(--white))] ">
+      <div className="mx-auto max-w-480 px-4 sm:px-6 md:px-12 lg:px-16 xl:px-20 2xl:px-24">
         {/* Title */}
-        <h2 className="heading-02 text-[rgb(var(--gray-900))] text-center mb-10">
+        <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-[rgb(var(--gray-900))] text-center mb-6 sm:mb-8 lg:mb-10">
           Recently added courses
         </h2>
 
         {/* Course Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-6">
           {courses.map((course, index) => (
             <div
               key={course.id}
-              className={`group relative overflow-hidden rounded-lg border border-[rgb(var(--gray-200))] bg-[rgb(var(--white))] transition-all duration-300 hover:shadow-lg ${
-                index === courses.length - 1 ? "hover:scale-[1.02]" : ""
-              }`}
+              className={`group relative overflow-hidden rounded-lg border border-[rgb(var(--gray-200))] bg-[rgb(var(--white))] transition-all duration-300 hover:shadow-lg ${index === courses.length - 1 ? "hover:scale-[1.02]" : ""
+                }`}
               onMouseEnter={() => setHoveredIndex(index)}
               onMouseLeave={() => setHoveredIndex(null)}
             >
               {/* Image */}
-              <div className="relative h-48 w-full overflow-hidden">
+              <div className="relative h-40 sm:h-44 lg:h-48 w-full overflow-hidden">
                 <Image
                   src={course.image}
                   alt={course.title}
                   fill
-                  className={`object-cover transition-transform duration-300 ${
-                    index === courses.length - 1 ? "group-hover:scale-110" : ""
-                  }`}
+                  className={`object-cover transition-transform duration-300 ${index === courses.length - 1 ? "group-hover:scale-110" : ""
+                    }`}
                 />
               </div>
 
               {/* Content */}
-              <div className="flex flex-col gap-4 p-4">
+              <div className="flex flex-col gap-3 sm:gap-4 p-3 sm:p-4">
                 {/* Category + Price */}
                 <div className="flex items-center justify-between">
                   <span
-                    className={`body-xs-500 uppercase rounded px-2 py-1 ${getCategoryStyles(
+                    className={`text-[10px] sm:text-xs font-medium uppercase rounded px-1.5 sm:px-2 py-0.5 sm:py-1 ${getCategoryStyles(
                       course.categoryColor
                     )}`}
                   >
                     {course.category}
                   </span>
-                  <span className="body-lg-600 text-[rgb(var(--primary-500))]">
+                  <span className="text-sm sm:text-base font-semibold text-[rgb(var(--primary-500))]">
                     ${course.price}
                   </span>
                 </div>
 
                 {/* Title */}
-                <h3 className="body-md-600 text-[rgb(var(--gray-900))] line-clamp-2 min-h-10">
+                <h3 className="text-xs sm:text-sm font-semibold text-[rgb(var(--gray-900))] line-clamp-2 min-h-[2rem] sm:min-h-10 leading-snug">
                   {course.title}
                 </h3>
 
@@ -155,10 +153,10 @@ const RecentlyAddedCourses = () => {
                 <div className="h-px w-full bg-[rgb(var(--gray-100))]" />
 
                 {/* Rating */}
-                <div className="flex items-center gap-3">
-                  <span className="flex items-center gap-1 body-sm-500 text-[rgb(var(--gray-900))]">
+                <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+                  <span className="flex items-center gap-1 text-xs sm:text-sm font-medium text-[rgb(var(--gray-900))]">
                     <svg
-                      className="w-4 h-4 text-[rgb(var(--warning-500))]"
+                      className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[rgb(var(--warning-500))]"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >
@@ -166,9 +164,9 @@ const RecentlyAddedCourses = () => {
                     </svg>
                     {course.rating}
                   </span>
-                  <span className="flex items-center gap-1 body-sm-400 text-[rgb(var(--gray-500))]">
+                  <span className="flex items-center gap-1 text-xs sm:text-sm text-[rgb(var(--gray-500))]">
                     <svg
-                      className="w-4 h-4"
+                      className="w-3.5 h-3.5 sm:w-4 sm:h-4"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -189,11 +187,11 @@ const RecentlyAddedCourses = () => {
         </div>
 
         {/* Browse All Course Button */}
-        <div className="flex justify-center mt-10">
-          <button className="flex items-center gap-2 px-6 py-3 border border-[rgb(var(--primary-500))] text-[rgb(var(--primary-500))] rounded-lg body-md-600 hover:bg-[rgb(var(--primary-50))] transition-colors">
+        <div className="flex justify-center mt-8 sm:mt-10">
+          <button className="flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 border border-[rgb(var(--primary-500))] text-[rgb(var(--primary-500))] rounded-lg text-sm sm:text-base font-semibold hover:bg-[rgb(var(--primary-50))] transition-colors">
             Browse All Course
             <svg
-              className="w-5 h-5"
+              className="w-4 h-4 sm:w-5 sm:h-5"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
