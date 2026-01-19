@@ -3,97 +3,46 @@ import Image from "next/image";
 
 export default function GallerySection() {
   return (
-    <>
-      <section className="hidden lg:block w-full bg-[rgb(var(--gray-50))]">
-        <div
-          className="
-            w-full
-            max-w-480
-            mx-auto
-            px-75
-            py-20
-          "
-        >
-          <div className="flex items-center gap-28">
-            <div className="w-106 flex flex-col gap-6">
-              <span className="label-lg uppercase tracking-wide text-[rgb(var(--primary-500))]">
+    <section className="w-full py-12 sm:py-16 lg:py-20 bg-[rgb(var(--gray-50))]">
+      <div className="mx-auto max-w-480 px-4 sm:px-6 md:px-12 lg:px-16 xl:px-20 2xl:px-24">
+        <div className="mx-auto max-w-480 px-4 sm:px-6 md:px-12 lg:px-16 xl:px-20 2xl:px-24">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-8 sm:gap-10 lg:gap-16">
+            {/* Left Side - Text Content */}
+            <div className="w-full lg:w-2/5 flex flex-col gap-4 sm:gap-6 text-center lg:text-left">
+              <span className="body-sm-600 sm:body-md-600 uppercase tracking-wide text-[rgb(var(--primary-500))]">
                 Our Gallery
               </span>
 
-              <h2 className="heading-03 text-[rgb(var(--gray-900))] leading-tight">
-                We’ve been here
-                <br />
-                almost 17
-                <br />
-                years
+              <h2 className="heading-04 sm:heading-03 lg:heading-02 text-[rgb(var(--gray-900))] leading-tight">
+                We've been here almost 17 years
               </h2>
 
-              <p className="body-md-400 text-[rgb(var(--gray-600))]">
+              <p className="body-sm-400 sm:body-md-400 text-[rgb(var(--gray-600))]">
                 Fusce lobortis leo augue, sit amet tristique nisi commodo in.
                 Aliquam ac libero quis tellus venenatis imperdiet. Sed sed nunc
                 libero. Curabitur in urna ligula.
               </p>
 
-              <button
-                className="
-                  mt-2
-                  inline-flex
-                  items-center
-                  gap-2
-                  px-6
-                  h-12
-                  bg-[rgb(var(--primary-500))]
-                  text-[rgb(var(--white))]
-                  body-md-600
-                  rounded
-                "
-              >
-                Join Our Team →
-              </button>
+              <div className="flex justify-center lg:justify-start pt-2">
+                <DarkBgBtn href="/career">Join Our Team</DarkBgBtn>
+              </div>
             </div>
-            <div className="relative w-215 h-130 shrink-0">
-              <Image
-                src="/home/gallery.png"
-                alt="Company gallery"
-                fill
-                className="object-cover"
-                priority
-              />
+
+            {/* Right Side - Image */}
+            <div className="w-full lg:w-3/5 flex justify-center lg:justify-end">
+              <div className="relative w-full max-w-md sm:max-w-lg lg:max-w-2xl aspect-video overflow-hidden rounded-lg">
+                <Image
+                  src="/home/gallery.png"
+                  alt="Company gallery"
+                  fill
+                  className="object-cover"
+                  priority
+                />
+              </div>
             </div>
           </div>
         </div>
-      </section>
-      <section className="lg:hidden w-full bg-[rgb(var(--gray-50))] px-6 py-16">
-        <div className="flex flex-col gap-12">
-          {/* TEXT */}
-          <div className="flex flex-col gap-6 w-full">
-            <span className="label-lg uppercase tracking-wide text-[rgb(var(--primary-500))]">
-              Our Gallery
-            </span>
-
-            <h2 className="heading-03 text-[rgb(var(--gray-900))]">
-              We’ve been here almost 17 years
-            </h2>
-
-            <p className="body-md-400 text-[rgb(var(--gray-600))]">
-              Fusce lobortis leo augue, sit amet tristique nisi commodo in.
-              Aliquam ac libero quis tellus venenatis imperdiet.
-            </p>
-
-            <DarkBgBtn children="Join Our Team" />
-          </div>
-
-          {/* IMAGE */}
-          <div className="relative aspect-860/520">
-            <Image
-              src="/home/gallery.png"
-              alt="Company gallery"
-              fill
-              className="object-cover"
-            />
-          </div>
-        </div>
-      </section>
-    </>
+      </div>
+    </section>
   );
 }
