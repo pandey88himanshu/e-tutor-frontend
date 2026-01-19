@@ -92,22 +92,24 @@ const FeaturedCourses = () => {
   ];
 
   return (
-    <div className="rounded-xl sm:rounded-2xl bg-[rgb(var(--white))] border border-[rgb(var(--gray-200))] p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8">
-      <div className="flex flex-col gap-3 sm:gap-4 md:flex-row md:items-start md:justify-between">
-        <h2 className="heading-04 sm:heading-03 text-[rgb(var(--gray-900))]">
-          Our feature courses
-        </h2>
+    <div className="mx-auto max-w-480 px-4 sm:px-6 md:px-12 lg:px-16 xl:px-20 2xl:px-24">
+      <div className="rounded-xl sm:rounded-2xl bg-[rgb(var(--white))] border border-[rgb(var(--gray-200))] p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8">
+        <div className="flex flex-col gap-3 sm:gap-4 md:flex-row md:items-start md:justify-between">
+          <h2 className="heading-04 sm:heading-03 text-[rgb(var(--gray-900))]">
+            Our feature courses
+          </h2>
 
-        <p className="max-w-md body-sm-400 text-[rgb(var(--gray-600))] md:text-right">
-          Vestibulum sed dolor sed diam mollis maximus vel nec dolor. Donec
-          varius purus ut eleifend porta.
-        </p>
-      </div>
+          <p className="max-w-md body-sm-400 text-[rgb(var(--gray-600))] md:text-right">
+            Vestibulum sed dolor sed diam mollis maximus vel nec dolor. Donec
+            varius purus ut eleifend porta.
+          </p>
+        </div>
 
-      <div className="grid grid-cols-1 gap-4 sm:gap-5 lg:gap-6 lg:grid-cols-2">
-        {courses.map((course, i) => (
-          <FeaturedCourseCard key={i} {...course} />
-        ))}
+        <div className="grid grid-cols-1 gap-4 sm:gap-5 lg:gap-6 lg:grid-cols-2">
+          {courses.map((course, i) => (
+            <FeaturedCourseCard key={i} {...course} />
+          ))}
+        </div>
       </div>
     </div>
   );
