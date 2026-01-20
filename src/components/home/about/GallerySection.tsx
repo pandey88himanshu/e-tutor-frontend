@@ -13,7 +13,7 @@ export default function GallerySection() {
                 Our Gallery
               </span>
 
-              <h2 className="heading-04 sm:heading-03 lg:heading-02 text-[rgb(var(--gray-900))] leading-tight">
+              <h2 className="heading-03 sm:heading-03 lg:heading-02 text-[rgb(var(--gray-900))] leading-tight">
                 We've been here almost 17 years
               </h2>
 

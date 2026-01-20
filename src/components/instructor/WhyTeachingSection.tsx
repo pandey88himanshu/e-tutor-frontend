@@ -21,50 +21,54 @@ const features = [
 
 export default function WhyTeachingSection() {
   return (
-    <section className="w-full bg-white">
-      <div className="mx-auto max-w-[1920px] px-6 sm:px-10 md:px-20 lg:px-[300px] py-16 lg:py-[100px]">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-[86px] items-center">
-          {/* Image */}
-          <div className="relative w-full">
-            <Image
-              src="/instructor/desktop.png" // replace with your actual image
-              alt="Why you’ll start teaching on Eduguard"
-              width={800}
-              height={600}
-              className="w-full h-auto rounded-xl"
-              priority
-            />
-          </div>
+    <section className="w-full py-12 sm:py-16 lg:py-20 bg-white">
+      <div className="mx-auto max-w-480 px-4 sm:px-6 md:px-12 lg:px-16 xl:px-20 2xl:px-24">
+        <div className="mx-auto max-w-480 px-4 sm:px-6 md:px-12 lg:px-16 xl:px-20 2xl:px-24">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-8 sm:gap-10 lg:gap-16">
+            {/* Image */}
+            <div className="w-full lg:w-1/2 flex justify-center lg:justify-start">
+              <div className="relative w-full max-w-md sm:max-w-lg lg:max-w-none overflow-hidden rounded-xl">
+                <Image
+                  src="/instructor/desktop.png"
+                  alt="Why you'll start teaching on Eduguard"
+                  width={800}
+                  height={600}
+                  className="w-full h-auto"
+                  priority
+                />
+              </div>
+            </div>
 
-          {/* Content */}
-          <div>
-            <h2 className="heading-02 text-[rgb(var(--gray-900))] mb-4">
-              Why you’ll start teaching on Eduguard
-            </h2>
+            {/* Content */}
+            <div className="w-full lg:w-1/2 text-center lg:text-left">
+              <h2 className="heading-03 sm:heading-02 text-[rgb(var(--gray-900))] mb-3 sm:mb-4">
+                Why you'll start teaching on Eduguard
+              </h2>
 
-            <p className="body-md-400 text-[rgb(var(--gray-600))] mb-8 max-w-xl">
-              Praesent commodo curabitur nibh sed ullamcorper. Proin venenatis
-              tellus non turpis scelerisque, vitae auctor orci ornare. Cras
-              vitae nulla a purus mollis venenatis.
-            </p>
+              <p className="body-sm-400 sm:body-md-400 text-[rgb(var(--gray-600))] mb-6 sm:mb-8 max-w-xl mx-auto lg:mx-0">
+                Praesent commodo curabitur nibh sed ullamcorper. Proin venenatis
+                tellus non turpis scelerisque, vitae auctor orci ornare. Cras
+                vitae nulla a purus mollis venenatis.
+              </p>
 
-            <div className="space-y-6">
-              {features.map((item, index) => (
-                <div key={index} className="flex gap-4">
-                  <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[rgb(var(--success-500))]">
-                    <Check className="h-4 w-4 text-white" />
+              <div className="space-y-4 sm:space-y-6">
+                {features.map((item, index) => (
+                  <div key={index} className="flex gap-3 sm:gap-4 text-left">
+                    <div className="flex h-5 w-5 sm:h-6 sm:w-6 shrink-0 items-center justify-center rounded-full bg-[rgb(var(--success-500))]">
+                      <Check className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
+                    </div>
+
+                    <div>
+                      <p className="body-md-600 sm:body-lg-600 text-[rgb(var(--gray-900))]">
+                        {item.title}
+                      </p>
+                      <p className="body-xs-400 sm:body-sm-400 text-[rgb(var(--gray-600))] mt-1">
+                        {item.description}
+                      </p>
+                    </div>
                   </div>
-
-                  <div>
-                    <p className="body-lg-600 text-[rgb(var(--gray-900))]">
-                      {item.title}
-                    </p>
-                    <p className="body-sm-400 text-[rgb(var(--gray-600))] mt-1">
-                      {item.description}
-                    </p>
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
         </div>

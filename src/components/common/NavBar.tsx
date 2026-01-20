@@ -92,7 +92,7 @@ const NavBar = () => {
   return (
     <>
       <nav className="w-full border-b border-[rgb(var(--gray-200))] bg-[rgb(var(--white))] relative z-50">
-        <div className="mx-auto flex h-20 max-w-7xl items-center justify-between gap-6 px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto flex h-16 sm:h-20 max-w-480 items-center justify-between gap-4 sm:gap-6 px-4 sm:px-6 md:px-12 lg:px-16 xl:px-20 2xl:px-24">
           {/* Logo */}
           <div className="flex items-center gap-2">
             <Link href="/">
