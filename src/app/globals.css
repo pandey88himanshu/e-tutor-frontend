@@ -359,3 +359,17 @@
 .clip-hero-shape {
   clip-path: polygon(0 0, 15% 0, 0 100%);
 }
+
+/* Skeleton Loading Shimmer Animation */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 1.5s infinite;
+}

@@ -22,6 +22,7 @@ import { clearCredentials } from "@/store/slices/authSlice";
 const NavBar = () => {
   const [open, setOpen] = useState(false);
   const [profileDropdown, setProfileDropdown] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
   const pathname = usePathname();
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -75,6 +76,7 @@ const NavBar = () => {
 
   // ✅ FIXED: Proper logout handler that clears cookies
   const handleLogout = async () => {
+    setLoggingOut(true);
     try {
       // Call backend logout API (clears refresh token cookie)
       await logout().unwrap();
@@ -175,7 +177,14 @@ const NavBar = () => {
                         </Link>
                         <div className="border-t border-[rgb(var(--gray-200))] my-2"></div>
 
-                        <DarkBgBtn onClick={handleLogout} children="Logout" />
+                        <DarkBgBtn
+                          onClick={handleLogout}
+                          loading={loggingOut}
+                          loadingText="Logging out..."
+                          fullWidth
+                        >
+                          Logout
+                        </DarkBgBtn>
                       </div>
                     )}
                   </div>
@@ -365,7 +374,14 @@ const NavBar = () => {
               {!isAuthPage ? (
                 <>
                   {isLoggedIn ? (
-                    <DarkBgBtn onClick={handleLogout} children="Logout" />
+                    <DarkBgBtn
+                      onClick={handleLogout}
+                      loading={loggingOut}
+                      loadingText="Logging out..."
+                      fullWidth
+                    >
+                      Logout
+                    </DarkBgBtn>
                   ) : (
                     <>
                       <LightBgBtn href="/sign-up" children="Create Account" />
