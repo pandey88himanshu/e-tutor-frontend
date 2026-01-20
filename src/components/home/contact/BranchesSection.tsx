@@ -2,60 +2,33 @@ import Image from "next/image";
 
 export default function BranchesSection() {
   return (
-    <section className="w-full bg-[rgb(var(--white))]">
-      <div
-        className="
-          hidden
-          lg:flex
-          flex-col
-          items-center
-          max-w-480
-          mx-auto
-          px-75
-          py-20
-          gap-10
-        "
-      >
-        <div className="w-151 flex flex-col gap-5 text-center">
-          <h2 className="heading-03 text-[rgb(var(--gray-900))]">
-            Our branches all over the world.
-          </h2>
+    <section className="w-full py-12 sm:py-16 lg:py-20 bg-[rgb(var(--white))]">
+      <div className="mx-auto max-w-480 px-4 sm:px-6 md:px-12 lg:px-16 xl:px-20 2xl:px-24">
+        <div className="mx-auto max-w-480 px-4 sm:px-6 md:px-12 lg:px-16 xl:px-20 2xl:px-24">
+          <div className="flex flex-col items-center gap-8 sm:gap-10 lg:gap-12">
+            {/* Text Content */}
+            <div className="w-full max-w-2xl flex flex-col gap-4 sm:gap-5 text-center">
+              <h2 className="heading-04 sm:heading-03 text-[rgb(var(--gray-900))]">
+                Our branches all over the world.
+              </h2>
 
-          <p className="body-md-400 text-[rgb(var(--gray-600))]">
-            Phasellus sed quam eu eros faucibus cursus. Quisque mauris urna,
-            imperdiet id leo quis, luctus auctor nisi.
-          </p>
-        </div>
-        <div className="relative w-330 h-91.5">
-          <Image
-            src="/home/branches.png"
-            alt="Our global branches"
-            fill
-            className="object-cover"
-            priority
-          />
-        </div>
-      </div>
-      <div className="lg:hidden px-6 py-16 flex flex-col gap-10">
-        <div className="flex flex-col gap-4 text-center">
-          <h2 className="heading-03 text-[rgb(var(--gray-900))]">
-            Our branches all over the world.
-          </h2>
+              <p className="body-sm-400 sm:body-md-400 text-[rgb(var(--gray-600))]">
+                Phasellus sed quam eu eros faucibus cursus. Quisque mauris urna,
+                imperdiet id leo quis, luctus auctor nisi.
+              </p>
+            </div>
 
-          <p className="body-md-400 text-[rgb(var(--gray-600))]">
-            Phasellus sed quam eu eros faucibus cursus. Quisque mauris urna,
-            imperdiet id leo quis, luctus auctor nisi.
-          </p>
-        </div>
-
-        {/* IMAGE */}
-        <div className="relative w-full aspect-1320/366">
-          <Image
-            src="/home/branches.png"
-            alt="Our global branches"
-            fill
-            className="object-cover"
-          />
+            {/* Map Image */}
+            <div className="relative w-full aspect-[1320/366] overflow-hidden">
+              <Image
+                src="/home/branches.png"
+                alt="Our global branches"
+                fill
+                className="object-contain"
+                priority
+              />
+            </div>
+          </div>
         </div>
       </div>
     </section>
