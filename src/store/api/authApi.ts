@@ -28,6 +28,7 @@ interface AuthUser {
   id: string;
   email: string;
   username: string;
+  role?: "USER" | "ADMIN" | "INSTRUCTOR";
 }
 
 interface SigninResponse {
@@ -74,7 +75,7 @@ export const authApi = createApi({
               user: data.user,
             })
           );
-        } catch {}
+        } catch { }
       },
     }),
 
@@ -93,7 +94,7 @@ export const authApi = createApi({
               user: data.user,
             })
           );
-        } catch {}
+        } catch { }
       },
     }),
 

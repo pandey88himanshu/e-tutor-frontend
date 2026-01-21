@@ -16,7 +16,7 @@ interface DarkBgBtnProps {
 const DarkBgBtn = ({
   href = "/sign-up",
   children = "Create Account",
-  onClick = () => { },
+  onClick,
   type = "button",
   disabled = false,
   asButton = false,
@@ -42,7 +42,7 @@ const DarkBgBtn = ({
   );
 
   // Render as button for form submissions or when onClick is provided
-  if (asButton || onClick !== (() => { })) {
+  if (asButton || onClick) {
     return (
       <button
         type={type}

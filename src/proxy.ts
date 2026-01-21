@@ -25,6 +25,18 @@ const protectedRoutes = [
 ];
 
 /* =======================
+   ADMIN ROUTES CONFIG
+   ======================= 
+   Routes that admin users CAN access.
+   Admin users will be BLOCKED from all other routes.
+*/
+
+const adminRoutes = [
+    "/admin",
+    "/admin/:path*",
+];
+
+/* =======================
    AUTH ROUTES
    =======================
    Routes that authenticated users should NOT access.
@@ -68,6 +80,7 @@ interface RefreshResponse {
         id: string;
         email: string;
         username: string;
+        role?: "USER" | "ADMIN" | "INSTRUCTOR";
     };
 }
 
@@ -111,27 +124,43 @@ async function refreshAccessToken(request: NextRequest): Promise<RefreshResponse
 export async function proxy(request: NextRequest) {
     const { pathname } = request.nextUrl;
 
-    // Check if route is protected
-    const isProtectedRoute = matchRoute(pathname, protectedRoutes);
-    const isAuthRoute = matchRoute(pathname, authRoutes);
-
-    // If route doesn't need auth handling, continue
-    if (!isProtectedRoute && !isAuthRoute) {
+    // Skip static files and API routes
+    if (
+        pathname.startsWith("/_next") ||
+        pathname.startsWith("/api") ||
+        pathname.includes(".")
+    ) {
         return NextResponse.next();
     }
 
-    // Get access token from cookies (set by the client after login)
-    // Note: Since you store accessToken in localStorage (client-side only),
-    // we'll need to check via a cookie that we set during login
-    const accessToken = request.cookies.get("accessToken")?.value;
+    // Check route types
+    const isProtectedRoute = matchRoute(pathname, protectedRoutes);
+    const isAuthRoute = matchRoute(pathname, authRoutes);
+    const isAdminRoute = matchRoute(pathname, adminRoutes);
 
-    // DEBUG: Log all cookies
+    // Get access token and role from cookies
+    const accessToken = request.cookies.get("accessToken")?.value;
+    const userRoleCookie = request.cookies.get("userRole")?.value;
+
+    // DEBUG: Log request info
     console.log("🔍 [Proxy] Path:", pathname);
     console.log("🔍 [Proxy] AccessToken cookie:", accessToken ? "EXISTS" : "MISSING");
-    console.log("🔍 [Proxy] All cookies:", request.cookies.getAll().map(c => c.name));
+    console.log("🔍 [Proxy] UserRole cookie:", userRoleCookie || "MISSING");
 
-    // If we have an access token, user is authenticated
+    // Determine authentication status and role
     let isAuthenticated = !!accessToken;
+    let userRole: string | undefined = userRoleCookie;
+
+    // If no role cookie, try to decode role from access token
+    if (!userRole && accessToken) {
+        try {
+            const payload = JSON.parse(atob(accessToken.split(".")[1]));
+            userRole = payload.role;
+            console.log("🔍 [Proxy] Role from JWT:", userRole);
+        } catch {
+            // Invalid token format
+        }
+    }
 
     // If no access token, try to refresh using the refresh token cookie
     if (!isAuthenticated) {
@@ -142,17 +171,34 @@ export async function proxy(request: NextRequest) {
             console.log("✅ [Proxy] Refresh succeeded, got new token");
             isAuthenticated = true;
 
-            // Create response and set the new access token cookie
-            const response = isAuthRoute
-                ? NextResponse.redirect(new URL("/", request.url))
+            // Decode role from new token
+            try {
+                const payload = JSON.parse(atob(refreshResult.accessToken.split(".")[1]));
+                userRole = payload.role;
+            } catch {
+                userRole = refreshResult.user?.role;
+            }
+
+            // Create response with new token cookie
+            let redirectUrl: string | null = null;
+
+            // Determine where to redirect based on role
+            if (isAuthRoute) {
+                redirectUrl = userRole === "ADMIN" ? "/admin" : "/";
+            } else if (userRole === "ADMIN" && !isAdminRoute) {
+                // Admin trying to access non-admin route after refresh
+                redirectUrl = "/admin";
+            }
+
+            const response = redirectUrl
+                ? NextResponse.redirect(new URL(redirectUrl, request.url))
                 : NextResponse.next();
 
-            // Set the new access token as a cookie
             response.cookies.set("accessToken", refreshResult.accessToken, {
-                httpOnly: false, // Allow client-side access
+                httpOnly: false,
                 secure: process.env.NODE_ENV === "production",
                 sameSite: "lax",
-                maxAge: 60 * 15, // 15 minutes (match your access token expiry)
+                maxAge: 60 * 15,
                 path: "/",
             });
 
@@ -160,15 +206,40 @@ export async function proxy(request: NextRequest) {
         }
     }
 
-    // Handle auth routes (sign-in, sign-up) - redirect authenticated users away
+    // ==========================================
+    // ADMIN USER RESTRICTIONS
+    // Admin users can ONLY access /admin routes
+    // ==========================================
+    if (isAuthenticated && userRole === "ADMIN") {
+        // If admin is trying to access a non-admin route, redirect to /admin
+        if (!isAdminRoute && !isAuthRoute) {
+            console.log("🔒 [Proxy] Admin trying to access non-admin route, redirecting to /admin");
+            return NextResponse.redirect(new URL("/admin", request.url));
+        }
+    }
+
+    // Handle admin routes - require admin role
+    if (isAdminRoute) {
+        if (!isAuthenticated) {
+            const signInUrl = new URL("/sign-in", request.url);
+            signInUrl.searchParams.set("callbackUrl", pathname);
+            return NextResponse.redirect(signInUrl);
+        }
+        if (userRole !== "ADMIN") {
+            // Not admin, redirect to home
+            return NextResponse.redirect(new URL("/", request.url));
+        }
+    }
+
+    // Handle auth routes - redirect authenticated users away
     if (isAuthRoute && isAuthenticated) {
-        return NextResponse.redirect(new URL("/", request.url));
+        const redirectUrl = userRole === "ADMIN" ? "/admin" : "/";
+        return NextResponse.redirect(new URL(redirectUrl, request.url));
     }
 
     // Handle protected routes - redirect unauthenticated users to sign-in
     if (isProtectedRoute && !isAuthenticated) {
         const signInUrl = new URL("/sign-in", request.url);
-        // Store the original URL to redirect back after login
         signInUrl.searchParams.set("callbackUrl", pathname);
         return NextResponse.redirect(signInUrl);
     }

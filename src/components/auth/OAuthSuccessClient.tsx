@@ -275,8 +275,11 @@ export default function OAuthSuccessClient() {
 
     localStorage.setItem("accessToken", token);
 
+    let userRole: "USER" | "ADMIN" | "INSTRUCTOR" | undefined;
+
     try {
       const payload = JSON.parse(atob(token.split(".")[1]));
+      userRole = payload.role;
       dispatch(
         setCredentials({
           accessToken: token,
@@ -284,6 +287,7 @@ export default function OAuthSuccessClient() {
             id: payload.id,
             email: payload.email,
             username: payload.username || payload.email?.split("@")[0] || "",
+            role: payload.role,
           },
         })
       );
@@ -291,7 +295,14 @@ export default function OAuthSuccessClient() {
       console.error("JWT decode failed", err);
     }
 
-    setTimeout(() => router.push("/"), 1500);
+    // Redirect admin users to admin page, others to home
+    setTimeout(() => {
+      if (userRole === "ADMIN") {
+        router.push("/admin");
+      } else {
+        router.push("/");
+      }
+    }, 1500);
   }, [searchParams, router, dispatch]);
 
   if (isError) {

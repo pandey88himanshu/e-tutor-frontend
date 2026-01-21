@@ -73,7 +73,17 @@ const SigninForm = () => {
 
       setTimeout(() => {
         setShowSuccess(false);
-        router.push("/");
+        // Debug: Log the response user to see the role
+        console.log("🔍 SigninForm - response.user:", response.user);
+        console.log("🔍 SigninForm - role:", response.user?.role);
+        // Redirect admin users to admin page, others to home
+        if (response.user?.role === "ADMIN") {
+          console.log("✅ Redirecting to /admin");
+          window.location.href = "/admin";
+        } else {
+          console.log("➡️ Redirecting to /");
+          window.location.href = "/";
+        }
       }, 1500);
     } catch (error: any) {
       const message =
