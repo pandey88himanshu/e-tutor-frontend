@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux"; // ✅ Import useDispatch
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
@@ -10,6 +11,7 @@ import FormField from "@/utils/FormField";
 import Input from "@/utils/Input";
 import PasswordInput from "@/utils/PasswordInput";
 import { useSigninMutation } from "@/store/api/authApi";
+import { setCredentials } from "@/store/slices/authSlice"; // ✅ Import your action
 import SuccessToast from "@/components/ui/SuccessToast";
 import ErrorToast from "@/components/ui/ErrorToast";
 
@@ -36,19 +38,34 @@ const SigninForm = () => {
   const [errorMessage, setErrorMessage] = useState("");
 
   const router = useRouter();
+  const dispatch = useDispatch(); // ✅ Initialize Dispatch
 
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<SigninFormData>({
     mode: "onBlur",
     defaultValues: {
       identifier: "",
       password: "",
-      rememberMe: false,
+      rememberMe: false, // Default to false
     },
   });
+
+  /* =======================
+     Logic: LOAD SAVED EMAIL
+  ======================= */
+  useEffect(() => {
+    // Check if we have a saved email in LocalStorage (for pre-filling only)
+    const savedIdentifier = localStorage.getItem("rememberedIdentifier");
+
+    if (savedIdentifier) {
+      setValue("identifier", savedIdentifier);
+      setValue("rememberMe", true);
+    }
+  }, [setValue]);
 
   /* =======================
      SUBMIT
@@ -61,11 +78,22 @@ const SigninForm = () => {
       const response = await signin(payload).unwrap();
 
       if (response?.accessToken) {
-        localStorage.setItem("accessToken", response.accessToken);
-      }
+        // 1. Handle "Pre-fill Email" Feature (UI Logic)
+        if (rememberMe) {
+          localStorage.setItem("rememberedIdentifier", data.identifier);
+        } else {
+          localStorage.removeItem("rememberedIdentifier");
+        }
 
-      if (rememberMe) {
-        localStorage.setItem("rememberedIdentifier", data.identifier);
+        // 2. Handle "Auth Session" Feature (Redux Logic)
+        // We pass 'rememberMe' so Redux knows whether to use Local or Session storage
+        dispatch(
+          setCredentials({
+            accessToken: response.accessToken,
+            user: response.user,
+            rememberMe: rememberMe, // ✅ Passing the flag to the slice
+          })
+        );
       }
 
       setSuccessMessage(response.message || "Login successful");
@@ -73,15 +101,10 @@ const SigninForm = () => {
 
       setTimeout(() => {
         setShowSuccess(false);
-        // Debug: Log the response user to see the role
-        console.log("🔍 SigninForm - response.user:", response.user);
-        console.log("🔍 SigninForm - role:", response.user?.role);
-        // Redirect admin users to admin page, others to home
+        // Redirect logic
         if (response.user?.role === "ADMIN") {
-          console.log("✅ Redirecting to /admin");
           window.location.href = "/admin";
         } else {
-          console.log("➡️ Redirecting to /");
           window.location.href = "/";
         }
       }, 1500);
@@ -94,7 +117,6 @@ const SigninForm = () => {
       setErrorMessage(message);
       setShowError(true);
 
-      // Optional: auto-redirect Google users
       if (message.includes("Google")) {
         setTimeout(handleGoogleSignin, 1500);
       }
@@ -125,6 +147,8 @@ const SigninForm = () => {
         <FormField label='Email or Username' error={errors.identifier?.message}>
           <Input
             type='text'
+            // ✅ Added for Browser Password Manager
+            autoComplete="username"
             placeholder='Email address or username...'
             error={!!errors.identifier}
             {...register("identifier", {
@@ -139,6 +163,8 @@ const SigninForm = () => {
 
         <FormField label='Password' error={errors.password?.message}>
           <PasswordInput
+            // ✅ Added for Browser Password Manager
+            autoComplete="current-password"
             placeholder='Password'
             error={!!errors.password}
             showPassword={showPassword}
@@ -154,10 +180,10 @@ const SigninForm = () => {
         </FormField>
 
         <div className='flex items-center justify-between'>
-          <label className='flex items-center gap-2 body-sm-400 text-[rgb(var(--gray-600))]'>
+          <label className='flex items-center gap-2 body-sm-400 text-[rgb(var(--gray-600))] cursor-pointer'>
             <input
               type='checkbox'
-              className='h-4 w-4'
+              className='h-4 w-4 rounded border-gray-300 text-[rgb(var(--primary-600))] focus:ring-[rgb(var(--primary-500))]'
               {...register("rememberMe")}
             />
             Remember me

@@ -1,32 +1,57 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { baseQueryWithReauth } from "./baseQueryWithReauth"; // Reuse your existing base query
+import { baseQueryWithReauth } from "./baseQueryWithReauth";
 
 /* =======================
    TYPES
 ======================= */
 
-// Matches the JSON body your Backend Controller expects
+// 1. Define the shape of a single Application object
+// (Merge fields from your Request and Response to cover everything)
+export interface Application {
+  id: string;
+  userId: string;
+  phone: string;
+  yearsOfExp: number;
+  expertise: "Beginner" | "Intermediate" | "Expert";
+  category: string;
+  about: string;
+  resumeUrl?: string;
+  introVideoUrl?: string;
+  status: "PENDING" | "APPROVED" | "REJECTED";
+  interviewStatus: "NOT_STARTED" | "IN_PROGRESS" | "COMPLETED";
+  createdAt: string;
+  updatedAt: string;
+}
+
+// 2. Response for getting ALL applications
+interface GetAllApplicationsResponse {
+  status: string;
+  results: number;
+  data: Application[];
+}
+
+// 3. Response for getting ONE application
+interface GetApplicationDetailsResponse {
+  status: string;
+  data: Application;
+}
+
+// 4. Request body for creating an application (Existing)
 export interface CreateApplicationRequest {
   phone: string;
   yearsOfExp: number;
-  expertise: string; // "Beginner" | "Intermediate" | "Expert"
+  expertise: string;
   category: string;
   about: string;
   resumeUrl?: string;
   introVideoUrl?: string;
 }
 
-// Matches the response from your Backend
-interface ApplicationResponse {
+// 5. Response for creating an application (Existing)
+interface CreateApplicationResponse {
   status: string;
   message: string;
-  data: {
-    id: string;
-    userId: string;
-    status: "PENDING" | "APPROVED" | "REJECTED";
-    interviewStatus: "NOT_STARTED" | "IN_PROGRESS" | "COMPLETED";
-    // ... add other fields if you need them in the UI
-  };
+  data: Application;
 }
 
 /* =======================
@@ -35,36 +60,67 @@ interface ApplicationResponse {
 
 export const applicationApi = createApi({
   reducerPath: "applicationApi",
-  // ✅ IMPORTANT: Use the same baseQuery so it shares the token logic
   baseQuery: baseQueryWithReauth,
+  // Detailed tag types allow refined cache invalidation
   tagTypes: ["Application"],
+
   endpoints: (builder) => ({
-    // Mutation: Submit the Instructor Application
-    applyInstructor: builder.mutation<
-      ApplicationResponse,
-      CreateApplicationRequest
-    >({
+
+    // --- ADMIN ROUTES ---
+
+    // GET /api/admin/applications?status=PENDING
+    getAllApplications: builder.query<GetAllApplicationsResponse, string | void>({
+      query: (status) => ({
+        url: "/admin/applications",
+        // Automatically adds ?status=... if status is provided
+        params: status ? { status } : undefined,
+      }),
+      // Provides a "List" tag. If we add/delete items, we invalidate this tag.
+      providesTags: (result) =>
+        result
+          ? [
+            ...result.data.map(({ id }) => ({ type: "Application" as const, id })),
+            { type: "Application", id: "LIST" },
+          ]
+          : [{ type: "Application", id: "LIST" }],
+    }),
+
+    // GET /api/admin/applications/:id
+    getApplicationDetails: builder.query<GetApplicationDetailsResponse, string>({
+      query: (id) => `/admin/applications/${id}`,
+      // Provides a tag specific to this ID. 
+      providesTags: (result, error, id) => [{ type: "Application", id }],
+    }),
+
+    // DELETE /api/admin/applications/:id
+    deleteApplication: builder.mutation<void, string>({
+      query: (id) => ({
+        url: `/admin/applications/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: [{ type: "Application", id: "LIST" }],
+    }),
+
+    // --- USER ROUTES ---
+
+    // POST /api/application/apply
+    applyInstructor: builder.mutation<CreateApplicationResponse, CreateApplicationRequest>({
       query: (body) => ({
-        url: "/application/apply", // Matches your Express Router path
+        url: "/application/apply",
         method: "POST",
         body,
       }),
-      invalidatesTags: ["Application"], // Invalidates cache so 'getMyApplication' refetches
+      // Invalidates the "LIST" so the Admin dashboard updates immediately after a user applies
+      invalidatesTags: [{ type: "Application", id: "LIST" }],
     }),
 
-    // Query: Get My Application Status (Placeholder for future use)
-    // You can uncomment this when you create the GET /status endpoint
-    /*
-    getMyApplication: builder.query<ApplicationResponse, void>({
-      query: () => "/application/status",
-      providesTags: ["Application"],
-    }),
-    */
   }),
 });
 
-// Export hooks for usage in components
+// Export hooks
 export const {
   useApplyInstructorMutation,
-  // useGetMyApplicationQuery
+  useGetAllApplicationsQuery,
+  useDeleteApplicationMutation,
+  useGetApplicationDetailsQuery,
 } = applicationApi;

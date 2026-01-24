@@ -16,8 +16,9 @@ import {
 import LightBgBtn from "./LightBgBtn";
 import DarkBgBtn from "./DarkBgBtn";
 import { useLogoutMutation } from "@/store/api/authApi";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { clearCredentials } from "@/store/slices/authSlice";
+import { RootState } from "@/store";
 
 const NavBar = () => {
   const [open, setOpen] = useState(false);
@@ -30,25 +31,8 @@ const NavBar = () => {
   const dispatch = useDispatch();
   const [logout] = useLogoutMutation();
 
-  // ✅ Local auth state
-  const [user, setUser] = useState<any>(null);
-  const [accessToken, setAccessToken] = useState<string | null>(null);
-
-  // ✅ Read auth data from localStorage
-  useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-    const storedUser = localStorage.getItem("user");
-
-    setAccessToken(token);
-
-    if (storedUser) {
-      try {
-        setUser(JSON.parse(storedUser));
-      } catch {
-        setUser(null);
-      }
-    }
-  }, []);
+  // ✅ Use Redux state for auth - this updates immediately when user logs in
+  const { accessToken, user } = useSelector((state: RootState) => state.auth);
 
   // Close dropdown when clicking outside
   useEffect(() => {
