@@ -112,6 +112,17 @@ export const applicationApi = createApi({
       }),
       // Invalidates the "LIST" so the Admin dashboard updates immediately after a user applies
       invalidatesTags: [{ type: "Application", id: "LIST" }],
+      // Also invalidate Auth cache so getCurrentUser refetches with the new application
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          // Import authApi and invalidate its Auth tag to refetch user data
+          const { authApi } = await import("./authApi");
+          dispatch(authApi.util.invalidateTags(["Auth"]));
+        } catch {
+          // Error is handled by the calling component
+        }
+      },
     }),
 
   }),

@@ -24,11 +24,40 @@ interface VerifyOtpRequest {
   otp: string;
 }
 
+interface InstructorApplication {
+  id: string;
+  userId: string;
+  phone: string;
+  yearsOfExp: number;
+  expertise: string;
+  category: string;
+  about: string;
+  resumeUrl: string;
+  introVideoUrl: string;
+  vapiCallId: string | null;
+  transcription: string | null;
+  aiScore: number | null;
+  aiFeedback: string | null;
+  status: "PENDING" | "APPROVED" | "REJECTED";
+  createdAt: string;
+  updatedAt: string;
+}
+
 interface AuthUser {
   id: string;
   email: string;
   username: string;
-  role?: "USER" | "ADMIN" | "INSTRUCTOR";
+  firstName: string;
+  lastName: string;
+  role: "USER" | "ADMIN" | "INSTRUCTOR";
+  provider: "local" | "google" | "github";
+  bio: string | null;
+  profileImage: string | null;
+  createdAt: string;
+  updatedAt: string;
+  instructorApplication: InstructorApplication | null;
+  createdCourses: unknown[];
+  purchases: unknown[];
 }
 
 interface SigninResponse {
@@ -122,14 +151,12 @@ export const authApi = createApi({
 
     getCurrentUser: builder.query<{ user: AuthUser }, void>({
       query: () => "/auth/me",
-      async onQueryStarted(_, { dispatch, queryFulfilled }) {
-        try {
-          const { data } = await queryFulfilled;
-          dispatch(setCredentials({ accessToken: "", user: data.user }));
-        } catch {
-          dispatch(clearCredentials());
-        }
-      },
+      providesTags: ["Auth"],
+      // Note: We don't use onQueryStarted here because:
+      // 1. The accessToken should NOT be overwritten (it would be set to "")
+      // 2. Errors are handled by baseQueryWithReauth (401 → refresh → retry)
+      // 3. Clearing credentials on error would cause logout on any network issue
+      // The user data from this query is returned directly and can be used via the hook
     }),
   }),
 });

@@ -1,6 +1,7 @@
 "use client";
 
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 import DarkBgBtn from "@/components/common/DarkBgBtn";
 import FormField from "@/utils/FormField";
 import Input from "@/utils/Input";
@@ -23,6 +24,7 @@ interface BecomeInstructorFormData {
 }
 
 const BecomeInstructorForm = () => {
+  const router = useRouter();
   const [showSuccess, setShowSuccess] = useState(false);
   const [showError, setShowError] = useState(false);
 
@@ -73,7 +75,11 @@ const BecomeInstructorForm = () => {
       setShowSuccess(true);
       reset();
 
-      setTimeout(() => setShowSuccess(false), 2500);
+      // Navigate to become-instructor page after a short delay
+      setTimeout(() => {
+        setShowSuccess(false);
+        router.push("/become-instructor");
+      }, 1500);
     } catch (error) {
       console.error("Failed to submit application:", error);
       setShowError(true);
