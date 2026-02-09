@@ -162,48 +162,14 @@ export async function proxy(request: NextRequest) {
         }
     }
 
-    // If no access token, try to refresh using the refresh token cookie
+    // 🚨 IMPORTANT: Server-side refresh CANNOT work for cross-origin cookies!
+    // The refreshToken cookie is set for the backend domain (onrender.com),
+    // so it's NOT accessible from the frontend's server (vercel.app).
+    // Token refresh must happen CLIENT-SIDE where the browser can send cookies.
+
+    // Just check if we have an accessToken - if not, user needs to login client-side
     if (!isAuthenticated) {
-        console.log("🔄 [Proxy] No accessToken, attempting refresh...");
-        const refreshResult = await refreshAccessToken(request);
-
-        if (refreshResult?.accessToken) {
-            console.log("✅ [Proxy] Refresh succeeded, got new token");
-            isAuthenticated = true;
-
-            // Decode role from new token
-            try {
-                const payload = JSON.parse(atob(refreshResult.accessToken.split(".")[1]));
-                userRole = payload.role;
-            } catch {
-                userRole = refreshResult.user?.role;
-            }
-
-            // Create response with new token cookie
-            let redirectUrl: string | null = null;
-
-            // Determine where to redirect based on role
-            if (isAuthRoute) {
-                redirectUrl = userRole === "ADMIN" ? "/admin" : "/";
-            } else if (userRole === "ADMIN" && !isAdminRoute) {
-                // Admin trying to access non-admin route after refresh
-                redirectUrl = "/admin";
-            }
-
-            const response = redirectUrl
-                ? NextResponse.redirect(new URL(redirectUrl, request.url))
-                : NextResponse.next();
-
-            response.cookies.set("accessToken", refreshResult.accessToken, {
-                httpOnly: false,
-                secure: process.env.NODE_ENV === "production",
-                sameSite: "lax",
-                maxAge: 60 * 15,
-                path: "/",
-            });
-
-            return response;
-        }
+        console.log("⚠️ [Proxy] No accessToken - user may need to refresh client-side");
     }
 
     // ==========================================
