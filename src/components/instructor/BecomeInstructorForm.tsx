@@ -7,8 +7,10 @@ import FormField from "@/utils/FormField";
 import Input from "@/utils/Input";
 import SuccessToast from "@/components/ui/SuccessToast";
 import ErrorToast from "@/components/ui/ErrorToast";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useApplyInstructorMutation } from "@/store/api/applicationApi";
+import { useGetCurrentUserQuery } from "@/store/api/authApi";
+import { uploadToCloudinary } from "@/utils/cloudinaryUpload";
 
 interface BecomeInstructorFormData {
   firstName: string;
@@ -27,8 +29,21 @@ const BecomeInstructorForm = () => {
   const router = useRouter();
   const [showSuccess, setShowSuccess] = useState(false);
   const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(
+    "Something went wrong. Please try again.",
+  );
 
-  // 2. Initialize the mutation
+  // Upload state
+  const [resumeProgress, setResumeProgress] = useState(0);
+  const [videoProgress, setVideoProgress] = useState(0);
+  const [isUploading, setIsUploading] = useState(false);
+  const [resumeFileName, setResumeFileName] = useState("");
+  const [videoFileName, setVideoFileName] = useState("");
+
+  // Get current user for email
+  const { data: userData } = useGetCurrentUserQuery();
+
+  // Initialize the mutation
   const [applyInstructor, { isLoading }] = useApplyInstructorMutation();
 
   const {
@@ -36,9 +51,9 @@ const BecomeInstructorForm = () => {
     handleSubmit,
     formState: { errors },
     reset,
+    setValue,
+    watch,
   } = useForm<BecomeInstructorFormData>({
-    // Debug: Log errors on every render
-    // console.log("Form Errors:", errors);
     mode: "onBlur",
     defaultValues: {
       firstName: "",
@@ -52,40 +67,60 @@ const BecomeInstructorForm = () => {
     },
   });
 
+  // Watch file fields for display
+  const resumeFiles = watch("resume");
+  const videoFiles = watch("introVideo");
+
+  useEffect(() => {
+    if (resumeFiles?.[0]) setResumeFileName(resumeFiles[0].name);
+  }, [resumeFiles]);
+
+  useEffect(() => {
+    if (videoFiles?.[0]) setVideoFileName(videoFiles[0].name);
+  }, [videoFiles]);
+
+  // Pre-fill email from current user
+  useEffect(() => {
+    if (userData?.user?.email) {
+      setValue("email", userData.user.email);
+    }
+  }, [userData, setValue]);
+
   const onSubmit = async (data: BecomeInstructorFormData) => {
-    console.log("✅ onSubmit called with data:", data); // Debug log
     try {
-      // 3. Construct the payload matching your API Expectation
-      // Note: We map 'mobile' -> 'phone', 'level' -> 'expertise', etc.
-      const apiPayload = {
+      // 1. Pass everything (including the raw File objects) directly to RTK Query
+      await applyInstructor({
         phone: data.mobile,
-        yearsOfExp: Number(data.experience), // Ensure number
+        yearsOfExp: Number(data.experience),
         expertise: data.level,
         category: data.category,
         about: data.about,
+        resumeFile: data.resume?.[0], // Pass the File object
+        introVideoFile: data.introVideo?.[0], // Pass the File object
+      }).unwrap();
 
-        // 🚨 HARDCODED TEMPORARY STRINGS (To be replaced by Cloudinary later)
-        resumeUrl: "https://temp-storage.com/default-resume.pdf",
-        introVideoUrl: "https://temp-storage.com/default-intro.mp4",
-      };
-
-      // 4. Call the API and unwrap to handle errors
-      await applyInstructor(apiPayload).unwrap();
-
+      // 2. Handle Success
       setShowSuccess(true);
       reset();
+      setResumeFileName("");
+      setVideoFileName("");
 
-      // Navigate to become-instructor page after a short delay
       setTimeout(() => {
         setShowSuccess(false);
         router.push("/become-instructor");
       }, 1500);
-    } catch (error) {
-      console.error("Failed to submit application:", error);
+    } catch (error: any) {
+      // 3. Handle Error
+      console.error("Submission failed:", error);
+      setErrorMessage(
+        error?.error || "Something went wrong. Please try again.",
+      );
       setShowError(true);
       setTimeout(() => setShowError(false), 3000);
     }
   };
+
+  const isBusy = isLoading || isUploading;
 
   return (
     <div className="flex h-full flex-col justify-center">
@@ -97,7 +132,7 @@ const BecomeInstructorForm = () => {
         onSubmit={handleSubmit(onSubmit)}
         className="grid grid-cols-1 gap-4 lg:grid-cols-2"
       >
-        {/* First Name - (Note: API fetches name from User Token, but form keeps it for UI) */}
+        {/* First Name */}
         <FormField error={errors.firstName?.message} label="First Name">
           <Input
             placeholder="First name"
@@ -121,12 +156,14 @@ const BecomeInstructorForm = () => {
           />
         </FormField>
 
-        {/* Email */}
+        {/* Email (locked to current user) */}
         <FormField label="Email" error={errors.email?.message}>
           <Input
             type="email"
             placeholder="Email address"
             error={!!errors.email}
+            readOnly
+            className="bg-[rgb(var(--gray-50))] cursor-not-allowed"
             {...register("email", {
               required: "Email is required",
             })}
@@ -154,8 +191,15 @@ const BecomeInstructorForm = () => {
             error={!!errors.experience}
             {...register("experience", {
               required: "Experience is required",
-              min: 0,
-              valueAsNumber: true, // Helper to ensure react-hook-form treats it as number
+              valueAsNumber: true,
+              min: {
+                value: 0,
+                message: "Experience cannot be negative",
+              },
+              max: {
+                value: 30,
+                message: "Maximum experience allowed is 30 years",
+              },
             })}
           />
         </FormField>
@@ -206,11 +250,28 @@ const BecomeInstructorForm = () => {
 
         {/* Resume Upload */}
         <FormField label="Resume (PDF)" error={errors.resume?.message}>
-          <label className="flex h-24 cursor-pointer flex-col items-center justify-center rounded-md border border-dashed border-[rgb(var(--gray-300))] hover:bg-[rgb(var(--gray-50))]">
-            <span className="text-2xl">📄</span>
-            <span className="body-sm-400 text-[rgb(var(--gray-600))]">
-              Click to upload
-            </span>
+          <label
+            className={`flex h-24 cursor-pointer flex-col items-center justify-center rounded-md border border-dashed transition-colors ${
+              resumeFileName
+                ? "border-[rgb(var(--success-400))] bg-[rgb(var(--success-50))]"
+                : "border-[rgb(var(--gray-300))] hover:bg-[rgb(var(--gray-50))]"
+            }`}
+          >
+            {resumeFileName ? (
+              <>
+                <span className="text-2xl">✅</span>
+                <span className="body-sm-500 text-[rgb(var(--success-600))] mt-1 max-w-[200px] truncate px-2">
+                  {resumeFileName}
+                </span>
+              </>
+            ) : (
+              <>
+                <span className="text-2xl">📄</span>
+                <span className="body-sm-400 text-[rgb(var(--gray-600))]">
+                  Click to upload
+                </span>
+              </>
+            )}
             <input
               type="file"
               accept=".pdf,.doc,.docx"
@@ -218,15 +279,46 @@ const BecomeInstructorForm = () => {
               {...register("resume")}
             />
           </label>
+          {/* Resume upload progress */}
+          {isUploading && resumeProgress > 0 && resumeProgress < 100 && (
+            <div className="mt-2">
+              <div className="w-full h-2 bg-[rgb(var(--gray-200))] rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-[rgb(var(--primary-500))] rounded-full transition-all duration-300"
+                  style={{ width: `${resumeProgress}%` }}
+                />
+              </div>
+              <span className="body-xs-400 text-[rgb(var(--gray-500))] mt-1">
+                Uploading resume... {resumeProgress}%
+              </span>
+            </div>
+          )}
         </FormField>
 
         {/* Video Upload */}
         <FormField label="Intro Video" error={errors.introVideo?.message}>
-          <label className="flex h-24 cursor-pointer flex-col items-center justify-center rounded-md border border-dashed border-[rgb(var(--gray-300))] hover:bg-[rgb(var(--gray-50))]">
-            <span className="text-2xl">🎥</span>
-            <span className="body-sm-400 text-[rgb(var(--gray-600))]">
-              Click to upload
-            </span>
+          <label
+            className={`flex h-24 cursor-pointer flex-col items-center justify-center rounded-md border border-dashed transition-colors ${
+              videoFileName
+                ? "border-[rgb(var(--success-400))] bg-[rgb(var(--success-50))]"
+                : "border-[rgb(var(--gray-300))] hover:bg-[rgb(var(--gray-50))]"
+            }`}
+          >
+            {videoFileName ? (
+              <>
+                <span className="text-2xl">✅</span>
+                <span className="body-sm-500 text-[rgb(var(--success-600))] mt-1 max-w-[200px] truncate px-2">
+                  {videoFileName}
+                </span>
+              </>
+            ) : (
+              <>
+                <span className="text-2xl">🎥</span>
+                <span className="body-sm-400 text-[rgb(var(--gray-600))]">
+                  Click to upload
+                </span>
+              </>
+            )}
             <input
               type="file"
               accept="video/*"
@@ -234,12 +326,30 @@ const BecomeInstructorForm = () => {
               {...register("introVideo")}
             />
           </label>
+          {/* Video upload progress */}
+          {isUploading && videoProgress > 0 && videoProgress < 100 && (
+            <div className="mt-2">
+              <div className="w-full h-2 bg-[rgb(var(--gray-200))] rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-[rgb(var(--primary-500))] rounded-full transition-all duration-300"
+                  style={{ width: `${videoProgress}%` }}
+                />
+              </div>
+              <span className="body-xs-400 text-[rgb(var(--gray-500))] mt-1">
+                Uploading video... {videoProgress}%
+              </span>
+            </div>
+          )}
         </FormField>
 
         {/* Submit */}
         <div className="lg:col-span-2 flex justify-end">
-          <DarkBgBtn asButton type="submit" disabled={isLoading}>
-            {isLoading ? "Submitting..." : "Submit for Review"}
+          <DarkBgBtn asButton type="submit" disabled={isBusy}>
+            {isUploading
+              ? "Uploading files..."
+              : isLoading
+                ? "Submitting..."
+                : "Submit for Review"}
           </DarkBgBtn>
         </div>
       </form>
@@ -251,7 +361,7 @@ const BecomeInstructorForm = () => {
       />
       <ErrorToast
         isOpen={showError}
-        message="Something went wrong. Please try again."
+        message={errorMessage}
         onClose={() => setShowError(false)}
       />
     </div>
